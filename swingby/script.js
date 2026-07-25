@@ -252,10 +252,16 @@ function update() {
     }
   }
   // 磁石効果：周辺のゴミを船へ引き寄せる
+  // 先に船と同じだけゴミを動かして「並走」させてから距離を詰める。
+  // こうしないと、船が速いほど毎フレーム逃げてしまい、
+  // 一定距離（速度に比例）で追いつけなくなる事故が起きる。
   if (magnetTimer > 0) {
     magnetTimer--;
     for (const d of activeDebris) {
-      if (Math.hypot(d.x - ship.x, d.y - ship.y) < MAGNET_RADIUS) {
+      const dist0 = Math.hypot(d.x - ship.x, d.y - ship.y);
+      if (dist0 < MAGNET_RADIUS) {
+        d.x += ship.vx;
+        d.y += ship.vy;
         d.x += (ship.x - d.x) * MAGNET_PULL;
         d.y += (ship.y - d.y) * MAGNET_PULL;
       }

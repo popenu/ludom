@@ -24,10 +24,12 @@ const stage = document.getElementById("stage");
 // 定数・状態
 // -------------------------------------------------------------
 const PPM = 18;              // 1メートル = 18px（距離換算）
-const STEP = 8;              // 地形を敷く矩形の幅
+const STEP = 8;               // 地形を敷く矩形の幅
 const BEST_KEY = "pandaRunBest";
+const ZOOM = 0.6;            // 画面に対する縮小率（1未満で引いた画面＝横がもっと見える）
 
-let W = 0, H = 0;
+let W = 0, H = 0;            // 実際の画面ピクセルサイズ
+let LW = 0, LH = 0;          // 論理的な可視ワールド範囲（ZOOM分だけ広い）
 let engine, world, panda;
 let cameraX = 0, cameraY = 0;
 let started = false, gameOver = false, holding = false;
@@ -70,6 +72,8 @@ function resize() {
   const rect = stage.getBoundingClientRect();
   W = Math.max(320, Math.floor(rect.width));
   H = Math.max(360, Math.floor(rect.height));
+  LW = W / ZOOM;
+  LH = H / ZOOM;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = W * dpr;
   canvas.height = H * dpr;
@@ -306,7 +310,7 @@ function drawSky() {
 function drawPillarLayer(factor, fill, cap, spacing, topMin, topMax, fogLine) {
   const camX = cameraX * factor;
   const i0 = Math.floor((camX - 200) / spacing);
-  const i1 = Math.floor((camX + W + 200) / spacing);
+  const i1 = Math.floor((camX + LW + 200) / spacing);
   for (let i = i0; i <= i1; i++) {
     const x = i * spacing - camX + rand(i) * spacing * 0.6;
     const w = 14 + rand(i * 1.7) * 24;             // 細い柱
@@ -331,7 +335,7 @@ function fogVeil(y0, y1) {
   g.addColorStop(0, "#eef2f000");
   g.addColorStop(1, "#eef2f0dd");
   ctx.fillStyle = g;
-  ctx.fillRect(0, y0, W, y1 - y0);
+  ctx.fillRect(0, y0, LW, y1 - y0);
 }
 
 function roundRectPath(x, y, w, h, r) {
@@ -353,9 +357,9 @@ function drawTerrain() {
       wob = Math.sin((crumbleGroups[seg.gid].timer + seg.x) * 0.8) * 2;
     }
     const sx = seg.x - cameraX + wob;
-    if (sx < -STEP * 2 || sx > W + STEP * 2) continue;
+    if (sx < -STEP * 2 || sx > LW + STEP * 2) continue;
     const sy = seg.topY - cameraY;
-    const bottom = H + 40;
+    const bottom = LH + 40;
 
     let rock = "#7a6a5c", grass = "#6fa85e";
     if (seg.type === "narrow") { rock = "#8d8478"; grass = "#7bb069"; }   // 明るい石柱
@@ -452,24 +456,30 @@ function drawPanda() {
 }
 
 function draw() {
-  drawSky();
+  drawSky(); // 背景は画面いっぱいに（ズーム前＝物理ピクセルのまま）
+
+  ctx.save();
+  ctx.scale(ZOOM, ZOOM); // ここから先はワールド座標＝縮小して描画（＝引いた画面）
+
   // 3層のパララックス奇岩（奥→手前）。各層のあとに霧をかけて足元をぼかす
-  drawPillarLayer(0.14, "#c6cfce", "#bcd0b4", 200, H * 0.15, H * 0.34, H * 0.60);
-  fogVeil(H * 0.44, H * 0.64);
-  drawPillarLayer(0.32, "#a8b5b1", "#a4c698", 240, H * 0.23, H * 0.44, H * 0.63);
-  fogVeil(H * 0.50, H * 0.71);
-  drawPillarLayer(0.58, "#84948e", "#88bd7d", 300, H * 0.33, H * 0.52, H * 0.67);
-  fogVeil(H * 0.57, H * 0.78);
+  drawPillarLayer(0.14, "#c6cfce", "#bcd0b4", 200, LH * 0.15, LH * 0.34, LH * 0.60);
+  fogVeil(LH * 0.44, LH * 0.64);
+  drawPillarLayer(0.32, "#a8b5b1", "#a4c698", 240, LH * 0.23, LH * 0.44, LH * 0.63);
+  fogVeil(LH * 0.50, LH * 0.71);
+  drawPillarLayer(0.58, "#84948e", "#88bd7d", 300, LH * 0.33, LH * 0.52, LH * 0.67);
+  fogVeil(LH * 0.57, LH * 0.78);
   drawTerrain();
   drawPanda();
+
+  ctx.restore();
 }
 
 // -------------------------------------------------------------
 // カメラ・進行
 // -------------------------------------------------------------
 function updateCamera() {
-  cameraX = panda.position.x - W * 0.32;
-  const targetY = panda.position.y - H * 0.52;
+  cameraX = panda.position.x - LW * 0.32;
+  const targetY = panda.position.y - LH * 0.52;
   cameraY += (targetY - cameraY) * 0.08;
 }
 
@@ -516,8 +526,8 @@ function resetWorld() {
   world = engine.world;
   engine.gravity.y = 1.0;
 
-  groundBase = H * 0.58;
-  amp = H * 0.19;         // 高低差を大きく（谷が深く、段差も大きい）
+  groundBase = LH * 0.58;
+  amp = LH * 0.19;         // 高低差を大きく（谷が深く、段差も大きい）
   deathY = groundBase + amp + 380;
 
   terrain = [];
@@ -539,10 +549,10 @@ function resetWorld() {
     genX = startEnd + (90 + Math.random() * 40); // 最初の谷
   }
   introLeft = 2; // その後さらに数枚は平地
-  buildAhead(START_X + W);
+  buildAhead(START_X + LW);
 
-  cameraX = panda.position.x - W * 0.32;
-  cameraY = panda.position.y - H * 0.52;
+  cameraX = panda.position.x - LW * 0.32;
+  cameraY = panda.position.y - LH * 0.52;
 }
 
 function resetGame() {
@@ -567,7 +577,7 @@ function loop() {
     Engine.update(engine, 1000 / 60);
     applyControls();
     updateCrumble();
-    buildAhead(cameraX + W + 400);
+    buildAhead(cameraX + LW + 400);
     pruneBehind(cameraX - 400);
     updateCamera();
     updateDistance();
