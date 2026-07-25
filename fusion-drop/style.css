@@ -390,9 +390,11 @@ body::before {
   justify-content: center;
 }
 
-/* ---------- レスポンシブ（スマホ：ゲームを画面いっぱいに、UIは上に重ねる） ---------- */
-/* スクロールで見切れる/誤タップで元素が落ちる問題を防ぐため、
-   パンダ走・スイングバイと同じ「キャンバス全画面＋HUDをオーバーレイ」方式に統一する */
+/* ---------- レスポンシブ（スマホ） ---------- */
+/* 核融合ドロップは画面の一番上から元素が落ちてくるため、
+   HUDを重ねると出現地点が隠れてしまう（パンダ走等とは違いオーバーレイ不可）。
+   代わりに「不透明な帯を上に固定し、その下にプレイ領域を確保」する
+   （スイカゲーム等の定石と同じ構成）。スクロールは発生させない。 */
 @media (max-width: 720px) {
   html, body {
     overscroll-behavior: none;
@@ -402,66 +404,54 @@ body::before {
     position: fixed;
     inset: 0;
     height: auto;
-    padding: 0;
-    display: block;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   #game-header {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    right: 8px;
-    z-index: 30;
     padding: 0;
-    pointer-events: none; /* キャンバスへのタップを邪魔しない */
+    flex-shrink: 0;
   }
   .logo { font-size: 0.95rem; }
   .logo span { font-size: 0.75rem; }
-  .header-buttons {
-    pointer-events: auto; /* ボタン自体はタップ可能に戻す */
-  }
   .btn-ghost {
     padding: 6px 10px;
     font-size: 0.7rem;
-    background: #10122099;
   }
 
   #game-main {
-    position: absolute;
-    inset: 0;
-    display: block;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: flex-start;
   }
 
   #side-panel {
-    position: absolute;
-    top: 42px;
-    left: 8px;
-    right: 8px;
-    z-index: 25;
-    width: auto;
+    width: 100%;
     flex-direction: row;
-    gap: 8px;
-    pointer-events: none;
+    flex-shrink: 0;
+    gap: 6px;
   }
   .panel-box {
     flex: 1;
     min-width: 0;
     padding: 6px 10px;
-    background: #10122099;
   }
   .panel-label { font-size: 0.6rem; margin-bottom: 2px; }
   .panel-value { font-size: 1.3rem; }
-  .next-preview { height: 40px; }
-  .element-badge { width: 32px; height: 32px; font-size: 0.75rem; }
+  .next-preview { height: 36px; }
+  .element-badge { width: 30px; height: 30px; font-size: 0.7rem; }
   .guide-box {
     display: none;
   }
 
   #game-stage {
-    position: absolute;
-    inset: 0;
+    flex: 1;
+    min-height: 0;
     max-width: none;
-    border-radius: 0;
-    border: none;
   }
 }
