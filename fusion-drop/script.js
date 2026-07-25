@@ -66,8 +66,13 @@ function buildWalls() {
   const rect = container.getBoundingClientRect();
   W = Math.max(rect.width, 240);
   H = Math.max(rect.height, 320);
-  canvas.width = W;
-  canvas.height = H;
+
+  // 実機の高精細ディスプレイ（Retina等）でもぼやけないよう、
+  // 見た目の解像度(W,H)より高いピクセル数でキャンバスを描画する
+  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   // 箱の幅を基準に各元素の実半径を算出（スマホ〜PCで見た目の比率を統一）
   for (const e of ELEMENTS) {
