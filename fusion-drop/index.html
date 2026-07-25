@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>核融合ドロップ | Fusion Drop</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="game-header">
+    <h1 class="logo">核融合<span>ドロップ</span></h1>
+    <div class="header-buttons">
+      <button id="btn-ranking" class="btn-ghost">🏆 ランキング</button>
+      <button id="btn-restart" class="btn-ghost">🔄 リスタート</button>
+    </div>
+  </header>
+
+  <main id="game-main">
+
+    <!-- サイドパネル：スコア＆NEXT -->
+    <aside id="side-panel">
+      <div class="panel-box">
+        <div class="panel-label">SCORE</div>
+        <div id="score-value" class="panel-value">0</div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-label">NEXT</div>
+        <div id="next-preview" class="next-preview">
+          <div id="next-element" class="element-badge"></div>
+        </div>
+      </div>
+      <div class="panel-box guide-box">
+        <div class="panel-label">元素表</div>
+        <ol id="element-guide" class="element-guide"></ol>
+      </div>
+    </aside>
+
+    <!-- ゲームキャンバス -->
+    <section id="game-stage">
+      <div id="danger-line"></div>
+      <div id="canvas-container"></div>
+
+      <!-- ゲームオーバーオーバーレイ -->
+      <div id="gameover-overlay" class="overlay hidden">
+        <div class="overlay-card">
+          <h2>GAME OVER</h2>
+          <p class="final-score">最終スコア：<span id="final-score-value">0</span></p>
+          <form id="score-form">
+            <input id="player-name" type="text" maxlength="12" placeholder="なまえ（12文字まで）" autocomplete="off" required>
+            <button type="submit" class="btn-primary">スコアを登録</button>
+          </form>
+          <button id="btn-play-again" class="btn-ghost">もう一度遊ぶ</button>
+        </div>
+      </div>
+
+      <!-- ブラックホール警告バナー -->
+      <div id="blackhole-banner" class="hidden">⚫ BLACK HOLE ACTIVE ⚫</div>
+    </section>
+
+  </main>
+
+  <!-- ランキングモーダル -->
+  <div id="ranking-modal" class="overlay hidden">
+    <div class="overlay-card">
+      <h2>🏆 スコアランキング</h2>
+      <ol id="ranking-list" class="ranking-list">
+        <li class="ranking-loading">読み込み中...</li>
+      </ol>
+      <button id="btn-close-ranking" class="btn-ghost">閉じる</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Matter.js（物理演算エンジン） -->
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+/* ===================================================
+   Ludom ポータル - スタイルシート
+   宇宙・科学テーマのダークモード（各ゲームと統一）
+=================================================== */
+
+:root {
+  --bg-deep: #05060f;
+  --bg-panel: #10122099;
+  --border-glow: #3d4a8a55;
+  --accent-cyan: #5ff2ff;
+  --accent-purple: #a78bfa;
+  --accent-pink: #ff6ec7;
+  --accent-gold: #ffd166;
+  --text-main: #e8ecff;
+  --text-dim: #8a90b8;
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at 15% 5%, #1b1f4a55 0%, transparent 45%),
+    radial-gradient(circle at 85% 95%, #4a1f6a55 0%, transparent 45%),
+    var(--bg-deep);
+  min-height: 100vh;
+}
+
+/* 背景の星屑 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #ffffffaa 0, transparent 100%),
+    radial-gradient(1px 1px at 80% 40%, #ffffff88 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 60% 80%, #ffffffcc 0, transparent 100%),
+    radial-gradient(1px 1px at 30% 65%, #ffffff77 0, transparent 100%),
+    radial-gradient(1px 1px at 90% 15%, #ffffff99 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 45% 30%, #ffffffaa 0, transparent 100%);
+  background-repeat: repeat;
+  background-size: 400px 400px;
+  opacity: 0.6;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ---------- ヘッダー ---------- */
+header.site {
+  text-align: center;
+  padding: 56px 20px 32px;
+}
+.logo {
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 40px #5ff2ff22;
+}
+.tagline {
+  margin-top: 12px;
+  color: var(--text-dim);
+  font-size: 1rem;
+}
+
+/* ---------- 広告枠プレースホルダ ---------- */
+/* 実運用時：この .ad-slot の中に AdSense 等のコードを貼り付ける */
+.ad-slot {
+  max-width: 728px;
+  min-height: 90px;
+  margin: 24px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #3d4a8a66;
+  border-radius: 12px;
+  color: #4a5080;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  background: #0a0c1e55;
+}
+
+/* ---------- セクション見出し ---------- */
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 28px 0 16px;
+  padding-left: 12px;
+  border-left: 3px solid var(--accent-cyan);
+}
+
+/* ---------- ゲームカード ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  padding-bottom: 12px;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  backdrop-filter: blur(8px);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.card.playable:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 12px 40px #00000066, 0 0 24px #5ff2ff33;
+}
+
+/* カードのビジュアル領域 */
+.thumb {
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 45%, #12163a 0%, #05060f 75%);
+  overflow: hidden;
+}
+.thumb svg { width: 68%; height: 68%; }
+
+.card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.card-sub {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  flex: 1;
+}
+.card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.tag {
+  font-size: 0.7rem;
+  color: var(--accent-cyan);
+  border: 1px solid #5ff2ff44;
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
+.play-cta {
+  margin-top: 12px;
+  align-self: flex-start;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #06070f;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  padding: 8px 16px;
+  border-radius: 999px;
+}
+
+/* Coming Soon カード */
+.card.soon {
+  cursor: default;
+  opacity: 0.55;
+}
+.card.soon .thumb { filter: grayscale(0.3) blur(1px); }
+.soon-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  background: #05060faa;
+  border: 1px solid var(--border-glow);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+/* ---------- フッター ---------- */
+footer.site {
+  text-align: center;
+  padding: 40px 20px 48px;
+  margin-top: 24px;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  border-top: 1px solid #1a1e3a;
+}
+footer.site a { color: var(--text-dim); text-decoration: none; }
+footer.site a:hover { color: var(--accent-cyan); }
+footer.site .links { margin-top: 8px; }
+footer.site .links span { margin: 0 8px; opacity: 0.5; }
+
+@media (max-width: 520px) {
+  .logo { font-size: 2rem; }
+  header.site { padding: 40px 16px 24px; }
+}

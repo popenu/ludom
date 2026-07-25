@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>パンダ走 | Panda Run</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- 戻る＆ベスト -->
+  <a id="back-link" href="../">← 一覧</a>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div id="distance">0<span class="unit">m</span></div>
+    <div id="best">ベスト 0m</div>
+  </div>
+
+  <!-- ゲーム描画 -->
+  <div id="stage">
+    <canvas id="game"></canvas>
+
+    <!-- スタート案内 -->
+    <div id="start-hint">
+      <div class="hint-card">
+        <div class="hint-title">🐼 パンダ走</div>
+        <p>タップで<strong>ジャンプ</strong>！<br>空中でもう一度タップ＝<strong>二段ジャンプ</strong>。<br>押しっぱなしで<strong>ふんわり滞空</strong>。</p>
+        <p class="hint-small">タップして スタート</p>
+      </div>
+    </div>
+
+    <!-- ゲームオーバー -->
+    <div id="gameover" class="hidden">
+      <div class="over-card">
+        <h2>ずどーん！</h2>
+        <p class="over-dist">今回：<span id="final-dist">0</span>m</p>
+        <p class="over-best">ベスト：<span id="final-best">0</span>m</p>
+        <button id="retry" class="btn-primary">もう一度</button>
+        <a href="../" class="btn-ghost">一覧へ</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# OS / エディタ
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# シークレット（万一の混入防止。プレースホルダのみのファイルは対象外）
+.env
+.env.*
+!.env.tpl
+credentials.json
+
+# Claude Code のローカル設定
+.claude/

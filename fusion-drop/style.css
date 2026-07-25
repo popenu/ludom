@@ -1,0 +1,419 @@
+/* ===================================================
+   核融合ドロップ - スタイルシート
+   宇宙・科学をテーマにしたダークモードデザイン
+=================================================== */
+
+:root {
+  --bg-deep: #05060f;
+  --bg-panel: #10122099;
+  --border-glow: #3d4a8a55;
+  --accent-cyan: #5ff2ff;
+  --accent-purple: #a78bfa;
+  --accent-pink: #ff6ec7;
+  --accent-gold: #ffd166;
+  --text-main: #e8ecff;
+  --text-dim: #8a90b8;
+  --danger: #ff4d6d;
+  --radius: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at 20% 10%, #1b1f4a55 0%, transparent 45%),
+    radial-gradient(circle at 80% 90%, #4a1f6a55 0%, transparent 45%),
+    var(--bg-deep);
+  background-attachment: fixed;
+  min-height: 100%;
+}
+
+/* 背景の星屑演出 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #ffffffaa 0, transparent 100%),
+    radial-gradient(1px 1px at 80% 40%, #ffffff88 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 60% 80%, #ffffffcc 0, transparent 100%),
+    radial-gradient(1px 1px at 30% 65%, #ffffff77 0, transparent 100%),
+    radial-gradient(1px 1px at 90% 15%, #ffffff99 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 45% 30%, #ffffffaa 0, transparent 100%);
+  background-repeat: repeat;
+  background-size: 400px 400px;
+  opacity: 0.7;
+}
+
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 16px 16px;
+}
+
+/* ---------- ヘッダー ---------- */
+#game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px 14px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 24px #5ff2ff33;
+}
+.logo span {
+  color: var(--text-main);
+  -webkit-text-fill-color: var(--text-main);
+  font-weight: 400;
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ghost, .btn-primary {
+  border: 1px solid var(--border-glow);
+  background: #ffffff0a;
+  color: var(--text-main);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(6px);
+}
+.btn-ghost:hover {
+  background: #ffffff1a;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 14px #5ff2ff33;
+}
+.btn-primary {
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  color: #06070f;
+  font-weight: 700;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+}
+.btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+/* ---------- メインレイアウト ---------- */
+#game-main {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  min-height: 0;
+  justify-content: center;
+}
+
+#side-panel {
+  width: 190px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  backdrop-filter: blur(8px);
+}
+
+.panel-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.panel-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-shadow: 0 0 18px #ffd16655;
+  font-variant-numeric: tabular-nums;
+}
+
+.next-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 74px;
+}
+
+.element-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #06070f;
+  box-shadow: 0 0 20px currentColor;
+}
+
+.guide-box {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.element-guide {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.element-guide li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+.element-guide .mini-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+}
+.element-guide .mini-name {
+  color: var(--text-main);
+}
+.element-guide .mini-arrow {
+  color: var(--text-dim);
+  margin: 0 2px;
+}
+
+/* ---------- ゲームステージ ---------- */
+#game-stage {
+  position: relative;
+  flex: 1;
+  max-width: 420px; /* スマホ想定の縦長の細い箱に（詰まりやすく＝ゲームオーバーしやすい） */
+  background: linear-gradient(180deg, #0a0c1e 0%, #05060f 100%);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: inset 0 0 60px #00000088, 0 0 40px #00000055;
+}
+
+#danger-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 140px; /* JS(buildWalls)が DANGER_LINE_Y で上書きするが、初期表示用に合わせておく */
+  height: 0;
+  border-top: 2px dashed var(--danger);
+  opacity: 0.55;
+  z-index: 5;
+  pointer-events: none;
+}
+
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+#canvas-container canvas {
+  display: block;
+}
+
+#blackhole-banner {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000000cc;
+  border: 1px solid var(--accent-purple);
+  color: var(--accent-purple);
+  padding: 6px 18px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  box-shadow: 0 0 26px #a78bfa77;
+  animation: pulse-banner 0.8s infinite alternate;
+  z-index: 20;
+}
+@keyframes pulse-banner {
+  from { box-shadow: 0 0 14px #a78bfa55; }
+  to   { box-shadow: 0 0 34px #a78bfaaa; }
+}
+
+/* ---------- オーバーレイ / モーダル ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: #05060fcc;
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+#ranking-modal.overlay {
+  position: fixed;
+}
+.hidden {
+  display: none !important;
+}
+
+.overlay-card {
+  width: min(360px, 88%);
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #12142aee;
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  padding: 26px 24px;
+  text-align: center;
+  box-shadow: 0 0 60px #00000099, 0 0 30px #5ff2ff22;
+}
+
+.overlay-card h2 {
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+  background: linear-gradient(90deg, var(--accent-pink), var(--accent-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.final-score {
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+.final-score span {
+  color: var(--accent-gold);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+#score-form {
+  display: flex;
+  flex-direction: column;
+}
+#player-name {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-glow);
+  background: #05060f;
+  color: var(--text-main);
+  font-size: 0.9rem;
+  outline: none;
+}
+#player-name:focus {
+  border-color: var(--accent-cyan);
+}
+
+#btn-play-again {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.ranking-list {
+  list-style: none;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  min-height: 60px;
+}
+.ranking-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #ffffff08;
+  font-size: 0.9rem;
+}
+.ranking-list li .rank-no {
+  width: 22px;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  flex-shrink: 0;
+  text-align: center;
+}
+.ranking-list li:nth-child(1) .rank-no { color: var(--accent-gold); }
+.ranking-list li:nth-child(2) .rank-no { color: #d9d9e6; }
+.ranking-list li:nth-child(3) .rank-no { color: #e0a86e; }
+.ranking-list li .rank-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ranking-list li .rank-score {
+  font-weight: 700;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+.ranking-loading, .ranking-empty {
+  color: var(--text-dim);
+  justify-content: center;
+}
+
+/* ---------- レスポンシブ ---------- */
+@media (max-width: 720px) {
+  #app {
+    padding: 8px 8px 12px;
+  }
+  .logo { font-size: 1.15rem; }
+  .logo span { font-size: 0.9rem; }
+  .btn-ghost { padding: 6px 10px; font-size: 0.75rem; }
+
+  #game-main {
+    flex-direction: column;
+  }
+  #side-panel {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .panel-box {
+    flex: 1;
+    min-width: 90px;
+  }
+  .guide-box {
+    display: none;
+  }
+  #game-stage {
+    flex: 1;
+  }
+}

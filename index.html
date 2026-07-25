@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ludom | ブラウザで遊べるパズル＆物理ゲーム</title>
+<meta name="description" content="インストール不要、ブラウザですぐ遊べるオリジナルゲーム集 Ludom（ルドム）。">
+<link rel="stylesheet" href="portal.css">
+</head>
+<body>
+
+<header class="site">
+  <h1 class="logo">Ludom</h1>
+  <p class="tagline">インストール不要。ブラウザですぐ遊べるオリジナルゲーム集。</p>
+</header>
+
+<div class="wrap">
+
+  <!-- ▼▼ 広告枠（公開後、AdSense等の広告コードをこの div の中に貼る）▼▼ -->
+  <div class="ad-slot" aria-hidden="true">広告スペース（公開後に設定）</div>
+  <!-- ▲▲ 広告枠ここまで ▲▲ -->
+
+  <h2 class="section-title">🎮 遊べるゲーム</h2>
+  <div class="grid">
+
+    <!-- 核融合ドロップ -->
+    <a class="card playable" href="fusion-drop/">
+      <div class="thumb">
+        <!-- 核融合＝恒星/原子をイメージしたビジュアル -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="star" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fff7d6"/>
+              <stop offset="35%" stop-color="#ffd166"/>
+              <stop offset="70%" stop-color="#ff8ac6"/>
+              <stop offset="100%" stop-color="#a78bfa00"/>
+            </radialGradient>
+          </defs>
+          <circle cx="100" cy="100" r="80" fill="url(#star)" opacity="0.9"/>
+          <circle cx="100" cy="100" r="34" fill="#fff7d6"/>
+          <g stroke="#5ff2ff" stroke-width="2" fill="none" opacity="0.85">
+            <ellipse cx="100" cy="100" rx="78" ry="30"/>
+            <ellipse cx="100" cy="100" rx="78" ry="30" transform="rotate(60 100 100)"/>
+            <ellipse cx="100" cy="100" rx="78" ry="30" transform="rotate(120 100 100)"/>
+          </g>
+          <circle cx="178" cy="100" r="6" fill="#5ff2ff"/>
+          <circle cx="61" cy="152" r="6" fill="#ff6ec7"/>
+          <circle cx="61" cy="48" r="6" fill="#9dffb0"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">核融合ドロップ</div>
+        <div class="card-sub">同じ元素を合体させて水素から鉄へ。鉄同士でブラックホールが発生する物理パズル。</div>
+        <div class="card-tags">
+          <span class="tag">物理パズル</span>
+          <span class="tag">スコア</span>
+        </div>
+        <span class="play-cta">▶ プレイ</span>
+      </div>
+    </a>
+
+    <!-- パンダ走 -->
+    <a class="card playable" href="panda-run/">
+      <div class="thumb">
+        <!-- 武陵源の石柱＋コロコロ転がるパンダ -->
+        <svg viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="200" height="125" fill="#e9edf0"/>
+          <!-- 奇岩の石柱 -->
+          <g>
+            <rect x="120" y="30" width="16" height="80" rx="8" fill="#aab6b3"/>
+            <ellipse cx="128" cy="32" rx="12" ry="4" fill="#a4c698"/>
+            <rect x="150" y="20" width="18" height="90" rx="9" fill="#93a1a2"/>
+            <ellipse cx="159" cy="22" rx="13" ry="4" fill="#8fbb84"/>
+            <rect x="180" y="45" width="14" height="65" rx="7" fill="#b9c2c4"/>
+            <ellipse cx="187" cy="47" rx="10" ry="3" fill="#bcd0b4"/>
+          </g>
+          <!-- 地面 -->
+          <path d="M0,100 Q50,88 100,96 T200,98 V125 H0 Z" fill="#7a6a5c"/>
+          <path d="M0,100 Q50,88 100,96 T200,98" stroke="#6fa85e" stroke-width="7" fill="none"/>
+          <!-- パンダ（ボール） -->
+          <g transform="translate(52,78) rotate(-18)">
+            <circle r="20" fill="#fdfdfd" stroke="#e2e2e2" stroke-width="2"/>
+            <circle cx="-12" cy="-15" r="7" fill="#222"/>
+            <circle cx="12" cy="-15" r="7" fill="#222"/>
+            <ellipse cx="-7" cy="-1" rx="5" ry="6.5" fill="#222"/>
+            <ellipse cx="7" cy="-1" rx="5" ry="6.5" fill="#222"/>
+            <circle cx="0" cy="7" r="2.6" fill="#333"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">パンダ走</div>
+        <div class="card-sub">武陵源の峡谷を、丸まったパンダがコロコロ疾走。坂の勢いで谷を飛び越える！</div>
+        <div class="card-tags">
+          <span class="tag">ランゲーム</span>
+          <span class="tag">ワンタップ</span>
+        </div>
+        <span class="play-cta">▶ プレイ</span>
+      </div>
+    </a>
+
+    <!-- スイングバイ・ディープスペース -->
+    <a class="card playable" href="swingby/">
+      <div class="thumb">
+        <!-- 惑星・重力圏・宇宙船の軌道 -->
+        <svg viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="200" height="125" fill="#080b1e"/>
+          <circle cx="30" cy="24" r="1" fill="#dfe6ff"/>
+          <circle cx="160" cy="18" r="1" fill="#8892c8"/>
+          <circle cx="90" cy="100" r="1" fill="#dfe6ff"/>
+          <circle cx="175" cy="95" r="1" fill="#8892c8"/>
+          <!-- 惑星＋重力圏 -->
+          <circle cx="135" cy="60" r="40" fill="none" stroke="#5ff2ff55" stroke-width="1.5" stroke-dasharray="3 6"/>
+          <circle cx="135" cy="60" r="20" fill="#4aa3e0"/>
+          <ellipse cx="135" cy="60" rx="30" ry="9" fill="none" stroke="#bcd0ff88" stroke-width="2" transform="rotate(-18 135 60)"/>
+          <!-- 軌道と宇宙船 -->
+          <path d="M20,110 Q70,95 95,72" fill="none" stroke="#5ff2ff88" stroke-width="2"/>
+          <g transform="translate(95,72) rotate(-40)">
+            <path d="M8,0 L-6,-5 L-3,0 L-6,5 Z" fill="#eaf0ff"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">スイングバイ・ディープスペース</div>
+        <div class="card-sub">惑星の重力で周回し、離してスイングバイ。宇宙ゴミを集めてどこまで遠くへ。</div>
+        <div class="card-tags">
+          <span class="tag">万有引力</span>
+          <span class="tag">ワンタップ</span>
+        </div>
+        <span class="play-cta">▶ プレイ</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ▼▼ 広告枠（下部）▼▼ -->
+  <div class="ad-slot" aria-hidden="true">広告スペース（公開後に設定）</div>
+  <!-- ▲▲ 広告枠ここまで ▲▲ -->
+
+</div>
+
+<footer class="site">
+  <div>© 2026 Ludom</div>
+  <div class="links">
+    <a href="privacy.html">プライバシーポリシー</a>
+    <span>・</span>
+    <a href="contact.html">お問い合わせ</a>
+  </div>
+</footer>
+
+</body>
+</html>

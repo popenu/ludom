@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>スイングバイ・ディープスペース | Swing-by Deep Space</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+  <a id="back-link" href="../">← 一覧</a>
+
+  <div id="hud">
+    <div id="distance">0<span class="unit">km</span></div>
+    <div id="sub">
+      <span id="debris">🛰 0</span>
+      <span id="magnet" class="hidden">🧲 0s</span>
+      <span id="best">BEST 0</span>
+    </div>
+  </div>
+
+  <div id="stage">
+    <canvas id="game"></canvas>
+
+    <!-- スタート案内 -->
+    <div id="start-hint">
+      <div class="hint-card">
+        <div class="hint-title">🚀 スイングバイ</div>
+        <p>惑星の<strong>重力圏で長押し</strong>すると<br>捕まって周回＆加速。<br><strong>離すとスイングバイ</strong>で弾け飛ぶ！</p>
+        <p>宇宙ゴミ 🛰 を集めてボーナス。<br>🧲 磁石を取ると周りのゴミを自動回収！</p>
+        <p class="hint-small">タップして スタート</p>
+      </div>
+    </div>
+
+    <!-- ゲームオーバー -->
+    <div id="gameover" class="hidden">
+      <div class="over-card">
+        <h2 id="over-title">墜落！</h2>
+        <p class="over-row">到達距離：<span id="final-dist">0</span> km</p>
+        <p class="over-row">宇宙ゴミ：<span id="final-debris">0</span> 個</p>
+        <p class="over-score">スコア <span id="final-score">0</span></p>
+        <p class="over-best">BEST <span id="final-best">0</span></p>
+        <button id="retry" class="btn-primary">もう一度</button>
+        <a href="../" class="btn-ghost">一覧へ</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
