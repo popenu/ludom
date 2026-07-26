@@ -1,6 +1,6 @@
 // ===================================================================
 // バチバチキャッチャー (Static Catch)
-// 押してチャージ→離して静電吸着で金属ゴミを引き寄せるアーケードゲーム
+// 押してチャージ→離して静電吸着で鉄屑を引き寄せるアーケードゲーム
 // Canvas 2D（自前の簡易物理）+ Supabase ランキング
 // ===================================================================
 
@@ -68,10 +68,10 @@ let W = 0, H = 0;
 let started = false, gameOver = false, holding = false;
 let score = 0;
 let charge = 0;          // 現在のチャージ量 0-100
-let litter = 0;          // 溜まったゴミの数
+let litter = 0;          // 溜まった鉄屑の数
 let best = Number(localStorage.getItem("staticCatchBest") || 0);
 
-let player = { x: 0, y: 0, r: 0, hairPhase: 0, rubPhase: 0, swingTimer: 0, swingPower: 0, facing: 1 };
+let player = { x: 0, y: 0, r: 0, whiskerPhase: 0, flashTimer: 0, facing: 1 };
 let pointerTargetX = null;
 let objects = [];        // 落下物
 let particles = [];      // スパーク・エフェクト
@@ -159,12 +159,11 @@ function updatePlayer(dt) {
       if (Math.abs(dx) > 2) player.facing = dx > 0 ? 1 : -1;
       player.x += dx * followRate;
     }
-    // ゴシゴシ：チャージが進むほど震えが速く大きくなる
-    player.rubPhase += dt * lerp(0.015, 0.05, charge / 100);
   }
   player.x = clamp(player.x, player.r, W - player.r);
-  player.hairPhase += dt * 0.02;
-  if (player.swingTimer > 0) player.swingTimer = Math.max(0, player.swingTimer - dt);
+  // ヒゲの揺れ：常にゆらゆら、チャージが進むほど速く・激しくバチバチと
+  player.whiskerPhase += dt * lerp(0.006, 0.045, charge / 100);
+  if (player.flashTimer > 0) player.flashTimer = Math.max(0, player.flashTimer - dt);
 }
 
 // -------------------------------------------------------------
@@ -172,15 +171,15 @@ function updatePlayer(dt) {
 // -------------------------------------------------------------
 const PULSE_MIN_R_RATIO = 0.0;
 const PULSE_MAX_R_RATIO = 0.62; // 画面幅に対する最大吸着半径の比率
-const SWING_TOTAL_MS = 520;     // 振り上げ〜振り下ろしアクションの総時間
+const FLASH_MS = 260;           // 放電した瞬間の体の発光フラッシュ時間
 
 function dischargePulse() {
   if (!started || gameOver) return;
   const releasedCharge = charge;
 
-  // 離した瞬間は必ず棒を振る（チャージが多いほど大きく振り上げる）
-  player.swingTimer = SWING_TOTAL_MS;
-  player.swingPower = clamp(0.25 + releasedCharge / 100 * 0.75, 0, 1);
+  // 離した瞬間は必ず体がバチッと光る（チャージが多いほど強く長く）
+  player.flashTimer = FLASH_MS * clamp(0.3 + releasedCharge / 100 * 0.7, 0, 1);
+  spawnSparkBurst(player.x, player.y, "#7ef2ff");
 
   if (releasedCharge < 3) { charge = 0; return; } // ほぼノーチャージなら吸着は発生しない
 
@@ -299,7 +298,7 @@ function addLitter(v) {
   litter += v;
   updateLitterUI();
   if (litter >= LITTER_MAX) {
-    triggerGameOver("ゴミが溢れた！", "コンテナの底にゴミが溜まりすぎました。");
+    triggerGameOver("鉄屑があふれた！", "コンテナの底に鉄屑が溜まりすぎました。");
   }
 }
 
@@ -365,196 +364,155 @@ function drawBackground() {
 }
 
 // ロッドの角度を状態（安静／ゴシゴシ／振り上げ）から求める
-// 角度は肩ピボットから見た向き。0=真下、負方向=前方へ振り上げ
-function rodAngle() {
-  const facing = player.facing;
-
-  if (player.swingTimer > 0) {
-    const p = 1 - player.swingTimer / SWING_TOTAL_MS; // 0→1
-    const power = player.swingPower;
-    const restA = 0.25;
-    const rubA = 1.05;
-    const upA = -2.55 * power - 0.15; // チャージが多いほど大きく振り上げる
-    if (p < 0.35) {
-      const e = 1 - Math.pow(1 - p / 0.35, 2); // easeOut
-      return lerp(rubA, upA, e) * facing;
-    } else if (p < 0.55) {
-      return upA * facing; // 振り上げた頂点で一瞬静止
-    } else {
-      const e = Math.pow((p - 0.55) / 0.45, 2); // easeIn
-      return lerp(upA, restA, e) * facing;
-    }
-  }
-  if (holding) {
-    const chargeT = charge / 100;
-    const rubBase = 1.05;
-    const amp = lerp(0.05, 0.4, chargeT);
-    return (rubBase + Math.sin(player.rubPhase) * amp) * facing;
-  }
-  return 0.25 * facing;
-}
-
 function drawPlayer() {
-  const { x, y, r } = player;
+  const { x, y, r, facing } = player;
   ctx.save();
   ctx.translate(x, y);
 
   // 影
   ctx.beginPath();
-  ctx.ellipse(0, r * 0.85, r * 0.9, r * 0.2, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, r * 0.62, r * 1.05, r * 0.2, 0, 0, Math.PI * 2);
   ctx.fillStyle = "#00000055";
   ctx.fill();
 
   const chargeT = charge / 100;
-  const swingActive = player.swingTimer > 0;
-  const swingP = swingActive ? 1 - player.swingTimer / SWING_TOTAL_MS : 0;
-  const peakFlash = swingActive && swingP > 0.3 && swingP < 0.6 ? player.swingPower : 0;
+  const flashT = player.flashTimer > 0 ? player.flashTimer / FLASH_MS : 0;
 
-  // チャージ中／振り上げ頂点のオーラ
-  const auraT = Math.max(chargeT * (holding ? 1 : 0), peakFlash);
+  // チャージ中／放電フラッシュのオーラ
+  const auraT = Math.max(holding ? chargeT : 0, flashT);
   if (auraT > 0.05) {
-    const grad = ctx.createRadialGradient(0, -r * 0.3, r * 0.4, 0, -r * 0.3, r * (1.5 + auraT * 1.1));
-    grad.addColorStop(0, `rgba(126,242,255,${0.28 * auraT})`);
+    const grad = ctx.createRadialGradient(0, 0, r * 0.3, 0, 0, r * (1.5 + auraT * 1.3));
+    grad.addColorStop(0, `rgba(126,242,255,${0.3 * auraT})`);
     grad.addColorStop(1, "rgba(126,242,255,0)");
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(0, -r * 0.3, r * (1.5 + auraT * 1.1), 0, Math.PI * 2);
+    ctx.arc(0, 0, r * (1.5 + auraT * 1.3), 0, Math.PI * 2);
     ctx.fill();
   }
 
-  const facing = player.facing;
-  const legY = r * 0.55, hipY = r * 0.15, chestY = -r * 0.35, headY = -r * 0.95, headR = r * 0.5;
-  const bodyW = r * 0.95;
+  // ここから先は「進行方向を向く」ローカル座標（+x=前方＝facing側）
+  ctx.save();
+  ctx.scale(facing, 1);
 
-  // 足
-  ctx.strokeStyle = "#3a2f52";
-  ctx.lineWidth = r * 0.24;
-  ctx.lineCap = "round";
+  const bl = r * 1.85, bh = r * 1.05; // 体の全長・厚み
+  const hL = bl / 2, hH = bh / 2;
+
+  // 尾びれ
   ctx.beginPath();
-  ctx.moveTo(-bodyW * 0.22, hipY); ctx.lineTo(-bodyW * 0.28, legY + r * 0.35);
-  ctx.moveTo(bodyW * 0.22, hipY); ctx.lineTo(bodyW * 0.28, legY + r * 0.35);
+  ctx.moveTo(-hL * 0.42, 0);
+  ctx.lineTo(-hL * 0.95, -hH * 0.75);
+  ctx.lineTo(-hL * 0.62, 0);
+  ctx.lineTo(-hL * 0.95, hH * 0.75);
+  ctx.closePath();
+  ctx.fillStyle = "#2f2650";
+  ctx.fill();
+  ctx.strokeStyle = "#7ef2ff77";
+  ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // 反対側の腕（体の後ろ、バランスを取る簡単な腕）
-  ctx.strokeStyle = "#3a2f52";
-  ctx.lineWidth = r * 0.18;
+  // 背びれ
   ctx.beginPath();
-  ctx.moveTo(-facing * bodyW * 0.4, chestY);
-  ctx.lineTo(-facing * bodyW * 0.62, chestY + r * 0.35);
-  ctx.stroke();
+  ctx.moveTo(-hL * 0.05, -hH * 0.92);
+  ctx.lineTo(hL * 0.18, -hH * 0.92);
+  ctx.lineTo(hL * 0.02, -hH * 1.5);
+  ctx.closePath();
+  ctx.fillStyle = "#2f2650";
+  ctx.fill();
 
-  // 胴体
+  // 胴体（電気ナマズ本体）
   ctx.beginPath();
-  ctx.roundRect(-bodyW / 2, chestY, bodyW, r * 0.95, bodyW * 0.32);
+  ctx.ellipse(0, 0, hL, hH, 0, 0, Math.PI * 2);
   ctx.fillStyle = "#3a2f52";
   ctx.fill();
   ctx.lineWidth = 2;
   ctx.strokeStyle = "#7ef2ff88";
   ctx.stroke();
 
-  // ロッドを持つ腕＋ロッド本体（肩ピボットから回転）
-  const shoulderX = facing * bodyW * 0.42, shoulderY = chestY + r * 0.08;
-  const angle = rodAngle();
-  ctx.save();
-  ctx.translate(shoulderX, shoulderY);
-  ctx.rotate(angle);
-  // 腕
-  ctx.strokeStyle = "#3a2f52";
-  ctx.lineWidth = r * 0.2;
+  // お腹の模様
   ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, r * 0.55);
-  ctx.stroke();
-  // ロッド
-  const rodLen = r * 1.5;
-  ctx.strokeStyle = "#c9bfe8";
-  ctx.lineWidth = r * 0.11;
-  ctx.lineCap = "round";
+  ctx.ellipse(hL * 0.05, hH * 0.35, hL * 0.62, hH * 0.42, 0, 0, Math.PI * 2);
+  ctx.fillStyle = "#4a3d6a";
+  ctx.fill();
+
+  // 胸びれ
   ctx.beginPath();
-  ctx.moveTo(0, r * 0.5);
-  ctx.lineTo(0, r * 0.5 + rodLen);
-  ctx.stroke();
-  // ロッド先端のスパーク球（チャージ／振り上げ中ほど明るく大きく）
-  const tipGlow = Math.max(holding ? chargeT : 0, peakFlash * 1.3);
-  if (tipGlow > 0.04) {
-    const tipY = r * 0.5 + rodLen;
-    const glowR = r * (0.18 + tipGlow * 0.32);
-    const g2 = ctx.createRadialGradient(0, tipY, 0, 0, tipY, glowR);
-    g2.addColorStop(0, "#ffffff");
-    g2.addColorStop(0.4, "#ffe066");
-    g2.addColorStop(1, "rgba(255,224,102,0)");
-    ctx.fillStyle = g2;
+  ctx.ellipse(-hL * 0.1, hH * 0.55, hL * 0.16, hH * 0.28, -0.3, 0, Math.PI * 2);
+  ctx.fillStyle = "#2f2650";
+  ctx.fill();
+
+  // ヒゲ（ナマズのバーベル）：チャージが強いほど激しくバチバチ動く
+  const whiskerT = Math.max(holding ? chargeT : 0, flashT);
+  const whiskerRootX = hL * 0.88, whiskerRootY = hH * 0.28;
+  const whiskerPairs = [
+    { dy: -hH * 0.08, len: hL * 0.62 },
+    { dy: hH * 0.32, len: hL * 0.5 },
+  ];
+  for (let i = 0; i < whiskerPairs.length; i++) {
+    const wp = whiskerPairs[i];
+    const swayAmp = lerp(0.06, 0.55, whiskerT);
+    const sway = Math.sin(player.whiskerPhase * (1 + i * 0.3) + i * 2.1) * swayAmp;
+    const jitter = whiskerT > 0.4 ? (Math.random() - 0.5) * 0.3 * whiskerT : 0;
+    const rootX = whiskerRootX, rootY = whiskerRootY + wp.dy;
+    const midX = rootX + wp.len * 0.55, midY = rootY + wp.len * 0.25 + sway * wp.len * 0.4;
+    const tipX = rootX + wp.len + jitter * wp.len, tipY = rootY + wp.len * 0.55 + sway * wp.len + jitter * wp.len;
+    ctx.strokeStyle = whiskerT > 0.75 ? "#ffe066" : "#c9bfe8";
+    ctx.lineWidth = Math.max(1.4, r * 0.06);
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.arc(0, tipY, glowR, 0, Math.PI * 2);
-    ctx.fill();
-    // ランダムなスパーク粒子
-    if (Math.random() < (holding ? 0.5 : 0.9) * tipGlow) {
-      const a = Math.random() * Math.PI * 2;
-      const wx = shoulderX + Math.sin(angle) * tipY, wy = shoulderY + Math.cos(angle) * tipY;
+    ctx.moveTo(rootX, rootY);
+    ctx.quadraticCurveTo(midX, midY, tipX, tipY);
+    ctx.stroke();
+    if (whiskerT > 0.55 && Math.random() < 0.5 * whiskerT) {
+      ctx.fillStyle = "#ffe066";
+      ctx.beginPath();
+      ctx.arc(tipX, tipY, r * 0.05, 0, Math.PI * 2);
+      ctx.fill();
       particles.push({
-        x: x + wx, y: y + wy,
-        vx: Math.cos(a) * 0.8, vy: Math.sin(a) * 0.8 - 0.3,
+        x: x + facing * tipX, y: y + tipY,
+        vx: facing * rand(-0.5, 1) , vy: rand(-1, 0.2),
         life: 1, color: "#7ef2ff", size: 1 + Math.random() * 1.5,
       });
     }
   }
-  ctx.restore();
 
-  // 頭
-  ctx.beginPath();
-  ctx.arc(0, headY, headR, 0, Math.PI * 2);
-  ctx.fillStyle = "#3a2f52";
-  ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = "#7ef2ff88";
-  ctx.stroke();
-
-  // 顔
+  // 目
   ctx.fillStyle = "#f0ecff";
-  for (const ex of [-0.34, 0.34]) {
-    ctx.beginPath();
-    ctx.arc(ex * headR, headY - headR * 0.05, headR * 0.16, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.fillStyle = "#3a2f52";
-  for (const ex of [-0.34, 0.34]) {
-    ctx.beginPath();
-    ctx.arc(ex * headR, headY - headR * 0.02, headR * 0.07, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.strokeStyle = "#f0ecff";
-  ctx.lineWidth = headR * 0.09;
   ctx.beginPath();
-  ctx.arc(0, headY + headR * 0.22, headR * 0.32, 0.15 * Math.PI, 0.85 * Math.PI);
+  ctx.arc(hL * 0.55, -hH * 0.28, hH * 0.26, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#22192f";
+  ctx.beginPath();
+  ctx.arc(hL * 0.6, -hH * 0.28, hH * 0.13, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 口（にこっと）
+  ctx.strokeStyle = "#22192f";
+  ctx.lineWidth = Math.max(1.5, hH * 0.12);
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.arc(hL * 0.72, hH * 0.05, hH * 0.35, 0.05 * Math.PI, 0.55 * Math.PI);
   ctx.stroke();
 
-  // 髪：チャージ（または振り上げの勢い）が強いほど逆立つ
-  const hairT = Math.max(holding ? chargeT : 0, peakFlash);
-  const strands = 7;
-  for (let i = 0; i < strands; i++) {
-    const t = i / (strands - 1);
-    const baseAngle = lerp(-1.15, 1.15, t) - Math.PI / 2;
-    const flat = 0.16;
-    const spiky = 0.66 + Math.sin(player.hairPhase * 3 + i) * 0.05 * hairT;
-    const len = headR * lerp(flat, spiky, hairT) * (1 + Math.sin(player.hairPhase * 2 + i * 1.3) * 0.08 * hairT);
-    const jitter = hairT > 0.3 ? (Math.random() - 0.5) * 0.12 * hairT : 0;
-    const ang = baseAngle + jitter;
-    const rootX = Math.cos(baseAngle) * headR * 0.9;
-    const rootY = headY + Math.sin(baseAngle) * headR * 0.9;
-    const tipX = rootX + Math.cos(ang) * len;
-    const tipY = rootY + Math.sin(ang) * len;
-    ctx.strokeStyle = hairT > 0.75 ? "#ffe066" : "#c9bfe8";
-    ctx.lineWidth = Math.max(1.3, headR * 0.09);
+  // 放電フラッシュ：体全体が一瞬白く光る
+  if (flashT > 0.02) {
+    ctx.globalAlpha = flashT * 0.85;
     ctx.beginPath();
-    ctx.moveTo(rootX, rootY);
-    ctx.lineTo(tipX, tipY);
-    ctx.stroke();
-    if (hairT > 0.7 && Math.random() < 0.5) {
-      ctx.fillStyle = "#ffe066";
-      ctx.beginPath();
-      ctx.arc(tipX, tipY, headR * 0.08, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    ctx.ellipse(0, 0, hL, hH, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore(); // facingスケール解除
+
+  // ランダムなスパーク粒子（体の周り、チャージ中）
+  if (holding && charge > 8 && Math.random() < 0.5) {
+    const a = Math.random() * Math.PI * 2;
+    particles.push({
+      x: x + Math.cos(a) * r * 1.1, y: y + Math.sin(a) * r * 0.8,
+      vx: Math.cos(a) * 0.6, vy: Math.sin(a) * 0.6 - 0.3,
+      life: 1, color: "#7ef2ff", size: 1 + Math.random() * 1.5,
+    });
   }
 
   ctx.restore();
