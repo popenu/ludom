@@ -15,7 +15,6 @@
   --accent-indigo: #6a5acd;
   --text-main: #4a3628;
   --text-dim: #a08a6f;
-  --danger: #ff5f6d;
   --radius: 16px;
 }
 
@@ -166,22 +165,6 @@ body {
   color: #4a3628;
   border: 2px solid #ffffffcc;
   box-shadow: 0 2px 8px #00000022;
-}
-
-.miss-dots {
-  display: flex;
-  gap: 6px;
-}
-.miss-dots .dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 2px solid var(--border-warm);
-}
-.miss-dots .dot.used {
-  background: var(--danger);
-  border-color: var(--danger);
 }
 
 /* ---------- ゲームステージ ---------- */
@@ -409,8 +392,6 @@ body {
   .panel-value { font-size: 1.05rem; }
   .next-preview { height: 30px; }
   .futon-badge { width: 40px; height: 26px; font-size: 0.75rem; border-radius: 10px; }
-  .miss-dots { gap: 4px; }
-  .miss-dots .dot { width: 10px; height: 10px; }
 
   #game-stage {
     flex: 1;

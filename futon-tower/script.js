@@ -158,8 +158,6 @@ function updateCamera() {
 // -------------------------------------------------------------
 let started = false, gameOver = false;
 let maxHeightM = 0;
-let fallCount = 0;
-const FALL_MAX = 3;
 
 let dropperX = 0;
 let dropperPhase = 0;
@@ -198,7 +196,6 @@ function weightedPickType() {
 const countValueEl = document.getElementById("count-value");
 const heightValueEl = document.getElementById("height-value");
 const nextBadgeEl = document.getElementById("next-badge");
-const missDotsEl = document.getElementById("miss-dots");
 const startHint = document.getElementById("start-hint");
 const gameoverOverlay = document.getElementById("gameover-overlay");
 const overReasonEl = document.getElementById("over-reason");
@@ -212,15 +209,6 @@ const btnRanking = document.getElementById("btn-ranking");
 const btnCloseRanking = document.getElementById("btn-close-ranking");
 const rankingModal = document.getElementById("ranking-modal");
 const rankingListEl = document.getElementById("ranking-list");
-
-function renderMissDots() {
-  missDotsEl.innerHTML = "";
-  for (let i = 0; i < FALL_MAX; i++) {
-    const dot = document.createElement("div");
-    dot.className = "dot" + (i < fallCount ? " used" : "");
-    missDotsEl.appendChild(dot);
-  }
-}
 
 function updateNextUI() {
   const def = FUTON_TYPES[nextType];
@@ -336,7 +324,6 @@ function updateSquish(dt) {
 // -------------------------------------------------------------
 function checkFallen() {
   const bodies = Composite.allBodies(world).filter((b) => b.futonType && !b.fallen);
-  let anyFell = false;
   for (const b of bodies) {
     if (b.position.y > FALL_MARGIN || b.position.x < -150 || b.position.x > W + 150) {
       b.fallen = true;
@@ -345,15 +332,8 @@ function checkFallen() {
         activeBody = null;
         canDrop = true;
       }
-      fallCount++;
-      anyFell = true;
       spawnDust(clamp(b.position.x, 20, W - 20), clamp(b.position.y, 0, H), FUTON_TYPES[b.futonType].stripeColor, 10);
-    }
-  }
-  if (anyFell) {
-    renderMissDots();
-    if (fallCount >= FALL_MAX) {
-      triggerGameOver("布団タワー崩壊！", "布団が" + FALL_MAX + "枚、床の外へ落ちてしまいました。");
+      triggerGameOver("布団タワー崩壊！", "布団が床の外へ落ちてしまいました。");
     }
   }
 }
@@ -626,7 +606,6 @@ function resetGame() {
   started = false;
   gameOver = false;
   maxHeightM = 0;
-  fallCount = 0;
   activeBody = null;
   canDrop = true;
   particles = [];
@@ -635,7 +614,6 @@ function resetGame() {
   dropperPhase = 0;
 
   resetCamera();
-  renderMissDots();
   updateNextUI();
   updateCountUI();
   heightValueEl.textContent = "0.0m";
