@@ -146,27 +146,6 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.next-preview {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 54px;
-}
-
-.futon-badge {
-  width: 54px;
-  height: 34px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 1rem;
-  color: #4a3628;
-  border: 2px solid #ffffffcc;
-  box-shadow: 0 2px 8px #00000022;
-}
-
 /* ---------- ゲームステージ ---------- */
 #game-stage {
   position: relative;
@@ -390,8 +369,6 @@ body {
   }
   .panel-label { font-size: 0.56rem; margin-bottom: 2px; }
   .panel-value { font-size: 1.05rem; }
-  .next-preview { height: 30px; }
-  .futon-badge { width: 40px; height: 26px; font-size: 0.75rem; border-radius: 10px; }
 
   #game-stage {
     flex: 1;

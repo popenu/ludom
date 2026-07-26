@@ -21,41 +21,12 @@ try {
 }
 
 // -------------------------------------------------------------
-// 布団タイプ定義
+// 布団の物理パラメータ（種類は1種類のみ：シンプルに積み上げに集中できるように）
 // -------------------------------------------------------------
-// widthMul/heightMul … 基準サイズに対する倍率
-// friction/frictionStatic … 摩擦係数（低いほどツルツル滑る）
-// restitution … 反発係数
-// squishAmp/squishDecay … 着地時の「ぎゅっ」演出の強さ・戻る速さ
-const FUTON_TYPES = {
-  normal: {
-    key: "normal", label: "ふつうの敷布団", badge: "普",
-    widthMul: 1.0, heightMul: 1.0,
-    friction: 0.8, frictionStatic: 1.0, restitution: 0.03, density: 0.0018,
-    squishAmp: 0.16, squishDecay: 0.09,
-    baseColor: "#fff6ea", stripeColor: "#ffb08a",
-  },
-  feather: {
-    key: "feather", label: "ふかふか羽毛布団", badge: "羽",
-    widthMul: 1.04, heightMul: 1.35,
-    friction: 0.68, frictionStatic: 0.88, restitution: 0.14, density: 0.001,
-    squishAmp: 0.34, squishDecay: 0.045,
-    baseColor: "#fffaf2", stripeColor: "#ffc7e0",
-  },
-  silk: {
-    key: "silk", label: "ツルツル絹布団", badge: "絹",
-    widthMul: 0.98, heightMul: 0.8,
-    friction: 0.1, frictionStatic: 0.16, restitution: 0.02, density: 0.0015,
-    squishAmp: 0.09, squishDecay: 0.12,
-    baseColor: "#f3ecff", stripeColor: "#c3a6ff",
-  },
-  senbei: {
-    key: "senbei", label: "せんべい布団", badge: "煎",
-    widthMul: 0.9, heightMul: 0.4,
-    friction: 0.95, frictionStatic: 1.1, restitution: 0.0, density: 0.0026,
-    squishAmp: 0.05, squishDecay: 0.2,
-    baseColor: "#f5deae", stripeColor: "#c08a3e",
-  },
+const FUTON_DEF = {
+  widthMul: 1.0, heightMul: 1.0,
+  friction: 0.9, frictionStatic: 1.1, restitution: 0.0, density: 0.0018,
+  baseColor: "#fff6ea", stripeColor: "#ffb08a",
 };
 
 // -------------------------------------------------------------
@@ -127,7 +98,7 @@ function resetCamera() {
 }
 
 function currentTopWorldY() {
-  const bodies = Composite.allBodies(world).filter((b) => b.futonType && b.hasLanded && !b.fallen);
+  const bodies = Composite.allBodies(world).filter((b) => b.isFuton && b.hasLanded && !b.fallen);
   let topY = 0;
   for (const b of bodies) {
     const t = b.position.y - b.h / 2;
@@ -161,8 +132,6 @@ let maxHeightM = 0;
 
 let dropperX = 0;
 let dropperPhase = 0;
-let currentType = weightedPickType();
-let nextType = weightedPickType();
 let canDrop = true;
 let activeBody = null;
 let particles = [];
@@ -173,29 +142,11 @@ function rand(lo, hi) { return lo + Math.random() * (hi - lo); }
 
 function diffFactor() { return clamp(maxHeightM / 10, 0, 1); }
 
-function weightedPickType() {
-  const d = diffFactor();
-  const weights = {
-    normal: lerp(0.42, 0.28, d),
-    feather: lerp(0.18, 0.27, d),
-    silk: lerp(0.14, 0.25, d),
-    senbei: lerp(0.26, 0.2, d),
-  };
-  const total = Object.values(weights).reduce((s, v) => s + v, 0);
-  let r = Math.random() * total;
-  for (const k in weights) {
-    r -= weights[k];
-    if (r <= 0) return k;
-  }
-  return "normal";
-}
-
 // -------------------------------------------------------------
 // UI 要素参照
 // -------------------------------------------------------------
 const countValueEl = document.getElementById("count-value");
 const heightValueEl = document.getElementById("height-value");
-const nextBadgeEl = document.getElementById("next-badge");
 const startHint = document.getElementById("start-hint");
 const gameoverOverlay = document.getElementById("gameover-overlay");
 const overReasonEl = document.getElementById("over-reason");
@@ -210,23 +161,16 @@ const btnCloseRanking = document.getElementById("btn-close-ranking");
 const rankingModal = document.getElementById("ranking-modal");
 const rankingListEl = document.getElementById("ranking-list");
 
-function updateNextUI() {
-  const def = FUTON_TYPES[nextType];
-  nextBadgeEl.textContent = def.badge;
-  nextBadgeEl.style.background = def.baseColor;
-  nextBadgeEl.style.borderColor = def.stripeColor;
-}
-
 function updateCountUI() {
-  const count = Composite.allBodies(world).filter((b) => b.futonType && b.hasLanded && !b.fallen).length;
+  const count = Composite.allBodies(world).filter((b) => b.isFuton && b.hasLanded && !b.fallen).length;
   countValueEl.textContent = count;
 }
 
 // -------------------------------------------------------------
 // 布団ボディの生成
 // -------------------------------------------------------------
-function createFutonBody(x, y, typeKey) {
-  const def = FUTON_TYPES[typeKey];
+function createFutonBody(x, y) {
+  const def = FUTON_DEF;
   const w = BASE_FUTON_W * def.widthMul;
   const h = BASE_FUTON_H * def.heightMul;
   const body = Bodies.rectangle(x, y, w, h, {
@@ -238,12 +182,11 @@ function createFutonBody(x, y, typeKey) {
     chamfer: { radius: Math.min(h * 0.4, 14) },
     label: "futon",
   });
-  body.futonType = typeKey;
+  body.isFuton = true;
   body.w = w;
   body.h = h;
   body.hasLanded = false;
   body.fallen = false;
-  body.squishT = 0;
   return body;
 }
 
@@ -261,14 +204,10 @@ function updateDropper(dt) {
 
 function dropFuton() {
   if (!started || gameOver || !canDrop) return;
-  const body = createFutonBody(dropperX, dropperWorldY(), currentType);
+  const body = createFutonBody(dropperX, dropperWorldY());
   Composite.add(world, body);
   activeBody = body;
   canDrop = false;
-
-  currentType = nextType;
-  nextType = weightedPickType();
-  updateNextUI();
 }
 
 // -------------------------------------------------------------
@@ -287,43 +226,30 @@ container.addEventListener("pointerdown", onTap);
 btnRestart.addEventListener("click", () => resetGame());
 
 // -------------------------------------------------------------
-// 衝突処理（着地判定・ぎゅっと沈む演出）
+// 衝突処理（着地判定）
 // -------------------------------------------------------------
 Events.on(engine, "collisionStart", (event) => {
   for (const pair of event.pairs) {
     for (const b of [pair.bodyA, pair.bodyB]) {
-      if (!b.futonType) continue;
-      if (!b.hasLanded) {
-        b.hasLanded = true;
-        if (b === activeBody) {
-          activeBody = null;
-          canDrop = true;
-        }
+      if (!b.isFuton || b.hasLanded) continue;
+      b.hasLanded = true;
+      if (b === activeBody) {
+        activeBody = null;
+        canDrop = true;
       }
       const speed = b.speed || 0;
       if (speed > 1.1) {
-        const def = FUTON_TYPES[b.futonType];
-        b.squishT = Math.min(1, (b.squishT || 0) + clamp(speed / 9, 0.35, 1));
-        spawnDust(b.position.x, b.position.y + b.h / 2 * 0.5, def.stripeColor, 6);
+        spawnDust(b.position.x, b.position.y + b.h / 2 * 0.5, FUTON_DEF.stripeColor, 6);
       }
     }
   }
 });
 
-function updateSquish(dt) {
-  const k = dt / 16.67;
-  for (const b of Composite.allBodies(world)) {
-    if (!b.futonType || b.squishT <= 0) continue;
-    const def = FUTON_TYPES[b.futonType];
-    b.squishT = Math.max(0, b.squishT - def.squishDecay * k);
-  }
-}
-
 // -------------------------------------------------------------
 // 落下（画面外）判定
 // -------------------------------------------------------------
 function checkFallen() {
-  const bodies = Composite.allBodies(world).filter((b) => b.futonType && !b.fallen);
+  const bodies = Composite.allBodies(world).filter((b) => b.isFuton && !b.fallen);
   for (const b of bodies) {
     if (b.position.y > FALL_MARGIN || b.position.x < -150 || b.position.x > W + 150) {
       b.fallen = true;
@@ -332,7 +258,7 @@ function checkFallen() {
         activeBody = null;
         canDrop = true;
       }
-      spawnDust(clamp(b.position.x, 20, W - 20), clamp(b.position.y, 0, H), FUTON_TYPES[b.futonType].stripeColor, 10);
+      spawnDust(clamp(b.position.x, 20, W - 20), clamp(b.position.y, 0, H), FUTON_DEF.stripeColor, 10);
       triggerGameOver("布団タワー崩壊！", "布団が床の外へ落ちてしまいました。");
     }
   }
@@ -450,11 +376,10 @@ function drawDecorations() {
 // -------------------------------------------------------------
 // 描画：布団
 // -------------------------------------------------------------
-function drawFutonShape(w, h, def, squishT, angle) {
-  const squish = (squishT || 0) * def.squishAmp;
+function drawFutonShape(w, h, angle) {
+  const def = FUTON_DEF;
   ctx.save();
   ctx.rotate(angle || 0);
-  ctx.scale(1 + squish * 0.6, 1 - squish);
 
   ctx.beginPath();
   ctx.roundRect(-w / 2, -h / 2, w, h, Math.min(h * 0.42, 12));
@@ -471,45 +396,13 @@ function drawFutonShape(w, h, def, squishT, angle) {
   ctx.lineTo(w * 0.3, 0);
   ctx.stroke();
 
-  if (def.key === "feather") {
-    // ふかふか感：上端にふわふわの丸み
-    ctx.fillStyle = def.stripeColor + "55";
-    for (let i = -2; i <= 2; i++) {
-      ctx.beginPath();
-      ctx.arc((w / 6) * i, -h / 2, h * 0.28, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  } else if (def.key === "silk") {
-    // ツルツル感：斜めのハイライト
-    ctx.save();
-    ctx.beginPath();
-    ctx.roundRect(-w / 2, -h / 2, w, h, Math.min(h * 0.42, 12));
-    ctx.clip();
-    const shine = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
-    shine.addColorStop(0.35, "#ffffff00");
-    shine.addColorStop(0.5, "#ffffffaa");
-    shine.addColorStop(0.65, "#ffffff00");
-    ctx.fillStyle = shine;
-    ctx.fillRect(-w / 2, -h / 2, w, h);
-    ctx.restore();
-  } else if (def.key === "senbei") {
-    // せんべい感：ごま粒の点々
-    ctx.fillStyle = def.stripeColor + "aa";
-    for (let i = -3; i <= 3; i++) {
-      if (i === 0) continue;
-      ctx.beginPath();
-      ctx.arc((w / 9) * i, h * 0.15 * (i % 2 === 0 ? 1 : -1), 1.6, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
   ctx.restore();
 }
 
 function drawFutonBody(b) {
   ctx.save();
   ctx.translate(b.position.x, b.position.y - camTopWorldY);
-  drawFutonShape(b.w, b.h, FUTON_TYPES[b.futonType], b.squishT, b.angle);
+  drawFutonShape(b.w, b.h, b.angle);
   ctx.restore();
 }
 
@@ -542,9 +435,8 @@ function drawDropper() {
   ctx.moveTo(-14, -18); ctx.lineTo(-14, -6);
   ctx.moveTo(14, -18); ctx.lineTo(14, -6);
   ctx.stroke();
-  const def = FUTON_TYPES[currentType];
-  const w = BASE_FUTON_W * def.widthMul * 0.7, h = BASE_FUTON_H * def.heightMul * 0.7;
-  drawFutonShape(w, h, def, 0, 0);
+  const w = BASE_FUTON_W * FUTON_DEF.widthMul * 0.7, h = BASE_FUTON_H * FUTON_DEF.heightMul * 0.7;
+  drawFutonShape(w, h, 0);
   ctx.restore();
 
   // 落下ガイド線
@@ -577,7 +469,7 @@ function draw() {
   drawDecorations();
   drawFloor();
   for (const b of Composite.allBodies(world)) {
-    if (!b.futonType || b.fallen) continue;
+    if (!b.isFuton || b.fallen) continue;
     drawFutonBody(b);
   }
   drawParticles();
@@ -590,7 +482,7 @@ function draw() {
 function triggerGameOver(title, reason) {
   if (gameOver) return;
   gameOver = true;
-  const count = Composite.allBodies(world).filter((b) => b.futonType && b.hasLanded && !b.fallen).length;
+  const count = Composite.allBodies(world).filter((b) => b.isFuton && b.hasLanded && !b.fallen).length;
   overReasonEl.textContent = reason || "";
   document.querySelector("#gameover-overlay h2").textContent = title || "GAME OVER";
   finalCountEl.textContent = count;
@@ -600,7 +492,7 @@ function triggerGameOver(title, reason) {
 }
 
 function resetGame() {
-  const bodies = Composite.allBodies(world).filter((b) => b.futonType);
+  const bodies = Composite.allBodies(world).filter((b) => b.isFuton);
   Composite.remove(world, bodies);
 
   started = false;
@@ -609,12 +501,9 @@ function resetGame() {
   activeBody = null;
   canDrop = true;
   particles = [];
-  currentType = weightedPickType();
-  nextType = weightedPickType();
   dropperPhase = 0;
 
   resetCamera();
-  updateNextUI();
   updateCountUI();
   heightValueEl.textContent = "0.0m";
 
@@ -637,7 +526,6 @@ function loop(ts) {
   if (started && !gameOver) {
     Engine.update(engine, FIXED_DT);
     updateDropper(dt);
-    updateSquish(dt);
     checkFallen();
     updateCamera();
     updateCountUI();
