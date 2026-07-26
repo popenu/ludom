@@ -1,0 +1,420 @@
+/* ===================================================
+   布団タワー - スタイルシート
+   和風×POPで親しみやすい、明るいクリーム基調のデザイン
+   （ゲーム画面内は高度に応じて和室→屋根→雲→宇宙に変化するため、
+    外側のUIはあえて一定の温かみのあるトーンに統一する）
+=================================================== */
+
+:root {
+  --bg-page: #fff3e0;
+  --bg-panel: #ffffffcc;
+  --border-warm: #e8d0a9;
+  --accent-pink: #ff8fa3;
+  --accent-mustard: #ffb84d;
+  --accent-teal: #4fbfa0;
+  --accent-indigo: #6a5acd;
+  --text-main: #4a3628;
+  --text-dim: #a08a6f;
+  --danger: #ff5f6d;
+  --radius: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at 15% 8%, #ffe3c455 0%, transparent 45%),
+    radial-gradient(circle at 85% 92%, #ffd0dd55 0%, transparent 45%),
+    var(--bg-page);
+  background-attachment: fixed;
+  min-height: 100%;
+}
+
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 16px 16px;
+}
+
+/* ---------- ヘッダー ---------- */
+#game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px 14px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--accent-pink), var(--accent-mustard));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.logo span {
+  color: var(--text-main);
+  -webkit-text-fill-color: var(--text-main);
+  font-weight: 400;
+  font-size: 1.1rem;
+  opacity: 0.75;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ghost, .btn-primary {
+  border: 1px solid var(--border-warm);
+  background: #ffffff99;
+  color: var(--text-main);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-ghost:hover {
+  background: #ffffff;
+  border-color: var(--accent-pink);
+  box-shadow: 0 0 14px #ff8fa333;
+}
+.btn-primary {
+  background: linear-gradient(90deg, var(--accent-pink), var(--accent-mustard));
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+}
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+/* ---------- メインレイアウト ---------- */
+#game-main {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  min-height: 0;
+  justify-content: center;
+}
+
+#side-panel {
+  width: 180px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  box-shadow: 0 2px 10px #00000010;
+}
+
+.panel-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.panel-value {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--accent-indigo);
+  font-variant-numeric: tabular-nums;
+}
+
+.next-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 54px;
+}
+
+.futon-badge {
+  width: 54px;
+  height: 34px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #4a3628;
+  border: 2px solid #ffffffcc;
+  box-shadow: 0 2px 8px #00000022;
+}
+
+.miss-dots {
+  display: flex;
+  gap: 6px;
+}
+.miss-dots .dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--border-warm);
+}
+.miss-dots .dot.used {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+/* ---------- ゲームステージ ---------- */
+#game-stage {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 30px #00000018;
+}
+
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  touch-action: none;
+}
+#canvas-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- スタート案内 ---------- */
+#start-hint {
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4a362833;
+  pointer-events: none;
+}
+.hint-card {
+  background: #fffaf0ee;
+  border: 1px solid var(--border-warm);
+  border-radius: 20px;
+  padding: 26px 26px;
+  text-align: center;
+  color: var(--text-main);
+  max-width: 320px;
+  box-shadow: 0 12px 40px #00000022;
+}
+.hint-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; }
+.hint-card p { font-size: 0.88rem; line-height: 1.7; color: var(--text-dim); margin-bottom: 6px; }
+.hint-small {
+  margin-top: 14px;
+  font-weight: 700;
+  color: var(--accent-pink) !important;
+  animation: blink 1.2s infinite;
+}
+@keyframes blink { 50% { opacity: 0.35; } }
+
+/* ---------- オーバーレイ / モーダル ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: #4a362866;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+#ranking-modal.overlay {
+  position: fixed;
+}
+.hidden {
+  display: none !important;
+}
+
+.overlay-card {
+  width: min(360px, 88%);
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #fffaf0f5;
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius);
+  padding: 26px 24px;
+  text-align: center;
+  box-shadow: 0 0 50px #00000033;
+}
+
+.overlay-card h2 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, var(--accent-pink), var(--accent-mustard));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.over-reason {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.final-score {
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+.final-score span {
+  color: var(--accent-indigo);
+  font-weight: 800;
+}
+
+#score-form {
+  display: flex;
+  flex-direction: column;
+}
+#player-name {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-warm);
+  background: #fff;
+  color: var(--text-main);
+  font-size: 0.9rem;
+  outline: none;
+}
+#player-name:focus {
+  border-color: var(--accent-pink);
+}
+
+#btn-play-again {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.ranking-list {
+  list-style: none;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  min-height: 60px;
+}
+.ranking-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #4a362808;
+  font-size: 0.9rem;
+}
+.ranking-list li .rank-no {
+  width: 22px;
+  font-weight: 800;
+  color: var(--accent-teal);
+  flex-shrink: 0;
+  text-align: center;
+}
+.ranking-list li:nth-child(1) .rank-no { color: var(--accent-mustard); }
+.ranking-list li:nth-child(2) .rank-no { color: #b9a184; }
+.ranking-list li:nth-child(3) .rank-no { color: #d78a5c; }
+.ranking-list li .rank-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ranking-list li .rank-score {
+  font-weight: 700;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+.ranking-loading, .ranking-empty {
+  color: var(--text-dim);
+  justify-content: center;
+}
+
+/* ---------- レスポンシブ（スマホ：不透明な帯を上に固定、下にプレイ領域） ---------- */
+@media (max-width: 720px) {
+  html, body {
+    overscroll-behavior: none;
+  }
+
+  #app {
+    position: fixed;
+    inset: 0;
+    height: auto;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #game-header {
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .logo { font-size: 0.95rem; }
+  .logo span { font-size: 0.75rem; }
+  .btn-ghost {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+
+  #game-main {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #side-panel {
+    width: 100%;
+    flex-direction: row;
+    flex-shrink: 0;
+    gap: 6px;
+  }
+  .panel-box {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 8px;
+  }
+  .panel-label { font-size: 0.56rem; margin-bottom: 2px; }
+  .panel-value { font-size: 1.05rem; }
+  .next-preview { height: 30px; }
+  .futon-badge { width: 40px; height: 26px; font-size: 0.75rem; border-radius: 10px; }
+  .miss-dots { gap: 4px; }
+  .miss-dots .dot { width: 10px; height: 10px; }
+
+  #game-stage {
+    flex: 1;
+    min-height: 0;
+    max-width: none;
+  }
+}

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>布団タワー | Futon Tower</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="game-header">
+    <h1 class="logo">布団<span>タワー</span></h1>
+    <div class="header-buttons">
+      <button id="btn-ranking" class="btn-ghost">🏆 ランキング</button>
+      <button id="btn-restart" class="btn-ghost">🔄 リスタート</button>
+    </div>
+  </header>
+
+  <main id="game-main">
+
+    <!-- サイドパネル：枚数・高度・ミス・NEXT -->
+    <aside id="side-panel">
+      <div class="panel-box">
+        <div class="panel-label">枚数</div>
+        <div id="count-value" class="panel-value">0</div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-label">高度</div>
+        <div id="height-value" class="panel-value">0.0m</div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-label">NEXT</div>
+        <div class="next-preview">
+          <div id="next-badge" class="futon-badge"></div>
+        </div>
+      </div>
+      <div class="panel-box">
+        <div class="panel-label">ミス</div>
+        <div id="miss-dots" class="miss-dots"></div>
+      </div>
+    </aside>
+
+    <!-- ゲームキャンバス -->
+    <section id="game-stage">
+      <div id="canvas-container"></div>
+
+      <!-- スタート案内 -->
+      <div id="start-hint">
+        <div class="hint-card">
+          <div class="hint-title">🛏️ 布団タワー</div>
+          <p>画面をタップすると、<strong>ドロッパーの位置</strong>から布団が真下に落ちる。</p>
+          <p>崩さずにどこまで高く積めるか挑戦しよう！<br>滑りやすい布団や、ふかふか布団には要注意。</p>
+          <p class="hint-small">タップして スタート</p>
+        </div>
+      </div>
+
+      <!-- ゲームオーバーオーバーレイ -->
+      <div id="gameover-overlay" class="overlay hidden">
+        <div class="overlay-card">
+          <h2>GAME OVER</h2>
+          <p class="over-reason" id="over-reason"></p>
+          <p class="final-score">枚数：<span id="final-count-value">0</span>　高度：<span id="final-height-value">0.0m</span></p>
+          <form id="score-form">
+            <input id="player-name" type="text" maxlength="12" placeholder="なまえ（12文字まで）" autocomplete="off" required>
+            <button type="submit" class="btn-primary">スコアを登録</button>
+          </form>
+          <button id="btn-play-again" class="btn-ghost">もう一度遊ぶ</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ランキングモーダル -->
+  <div id="ranking-modal" class="overlay hidden">
+    <div class="overlay-card">
+      <h2>🏆 高度ランキング</h2>
+      <ol id="ranking-list" class="ranking-list">
+        <li class="ranking-loading">読み込み中...</li>
+      </ol>
+      <button id="btn-close-ranking" class="btn-ghost">閉じる</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Matter.js（物理演算エンジン） -->
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
