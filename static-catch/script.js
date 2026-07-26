@@ -51,12 +51,12 @@ const rankingListEl = document.getElementById("ranking-list");
 // -------------------------------------------------------------
 // 落下物タイプ定義
 // -------------------------------------------------------------
-// reqCharge: 吸着に必要な放電量(%)。null=吸着不可（水滴＝電気を通すので効かない）
+// reqCharge: 吸着に必要な放電量(%)。null=パルスでは吸着できない特殊アイテム
 const TYPES = {
-  light:  { reqCharge: 10,  score: 10,  rBase: 0.028, speed: [1.3, 1.9], color: "#e7e2f5", label: "紙くず" },
-  medium: { reqCharge: 50,  score: 30,  rBase: 0.042, speed: [1.6, 2.3], color: "#b9c2d6", label: "空き缶" },
-  heavy:  { reqCharge: 100, score: 100, rBase: 0.062, speed: [1.5, 2.0], color: "#8a6a52", label: "ドラム缶" },
-  water:  { reqCharge: null, score: 0,  rBase: 0.03, speed: [2.2, 3.0], color: "#1f6fd6", label: "水滴" },
+  light:   { reqCharge: 10,  score: 10,  rBase: 0.028, speed: [1.3, 1.9], color: "#e7e2f5", label: "紙くず" },
+  medium:  { reqCharge: 50,  score: 30,  rBase: 0.042, speed: [1.6, 2.3], color: "#b9c2d6", label: "空き缶" },
+  heavy:   { reqCharge: 100, score: 100, rBase: 0.062, speed: [1.5, 2.0], color: "#8a6a52", label: "ドラム缶" },
+  battery: { reqCharge: null, score: 0,  rBase: 0.03,  speed: [1.8, 2.5], color: "#ffe066", label: "電池" }, // 触れると即フルチャージ
 };
 
 const LITTER_MAX = 8; // これを超えるとゲームオーバー
@@ -187,7 +187,7 @@ function dischargePulse() {
   pulses.push({ x: player.x, y: player.y, r: 4, maxR: radius, life: 1 });
 
   for (const o of objects) {
-    if (o.dead || o.type === "water") continue;
+    if (o.dead || o.type === "battery") continue;
     const d = Math.hypot(o.x - player.x, o.y - player.y);
     if (d > radius) continue;
     const def = TYPES[o.type];
@@ -206,10 +206,10 @@ function dischargePulse() {
 function weightedPickType() {
   const d = diff();
   const weights = {
-    light: lerp(0.5, 0.32, d),
-    medium: lerp(0.28, 0.30, d),
-    heavy: lerp(0.08, 0.20, d),
-    water: lerp(0.14, 0.18, d),
+    light: lerp(0.5, 0.34, d),
+    medium: lerp(0.28, 0.32, d),
+    heavy: lerp(0.08, 0.22, d),
+    battery: lerp(0.1, 0.08, d), // 進むほど少し出にくく（楽をさせすぎない）
   };
   const total = Object.values(weights).reduce((s, v) => s + v, 0);
   let r = Math.random() * total;
@@ -263,12 +263,12 @@ function updateObjects(dt) {
     // 地面（プレイヤーの高さ）に到達
     if (o.y + o.r >= player.y - player.r * 0.4) {
       const overlapX = Math.abs(o.x - player.x) < (o.r + player.r * 0.9);
-      if (o.type === "water") {
+      if (o.type === "battery") {
         if (overlapX) {
-          charge = 0;
-          spawnSparkFizzle(player.x, player.y - player.r);
+          charge = 100;
+          spawnSparkBurst(player.x, player.y - player.r, "#ffe066");
         }
-        o.dead = true;
+        o.dead = true; // 触れなかった場合もペナルティなしでそのまま消える
       } else if (o.type === "heavy") {
         if (overlapX) {
           o.dead = true;
@@ -573,24 +573,39 @@ function drawObject(o) {
     ctx.beginPath();
     ctx.roundRect(-w / 2, -h / 2, w, h, w * 0.18);
     ctx.stroke();
-  } else if (o.type === "water") {
-    // 水滴：スパークの水色と混同しないよう、はっきり深い青＋輪郭で「水」だと分かるように
+  } else if (o.type === "battery") {
+    // 電池：触れると即フルチャージのボーナスアイテム。一目でそれと分かる電池アイコン＋雷マーク
+    const w = o.r * 1.15, h = o.r * 1.9;
+    const glow = 0.6 + Math.sin(performance.now() / 160) * 0.4; // 常にほんのり明滅
+    ctx.shadowColor = "#ffe066";
+    ctx.shadowBlur = 6 + glow * 6;
+    // 本体
     ctx.beginPath();
-    ctx.moveTo(0, -o.r * 1.3);
-    ctx.quadraticCurveTo(o.r, 0, 0, o.r);
-    ctx.quadraticCurveTo(-o.r, 0, 0, -o.r * 1.3);
-    const g = ctx.createLinearGradient(0, -o.r, 0, o.r);
-    g.addColorStop(0, "#5aa8f0");
-    g.addColorStop(1, def.color);
-    ctx.fillStyle = g;
+    ctx.roundRect(-w / 2, -h / 2, w, h, w * 0.22);
+    ctx.fillStyle = "#fff3c4";
     ctx.fill();
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = "#0d3a80";
+    ctx.strokeStyle = "#c99a1f";
     ctx.stroke();
-    // ハイライト（つや）
-    ctx.fillStyle = "#ffffffbb";
+    ctx.shadowBlur = 0;
+    // ＋端子（頭の出っ張り）
     ctx.beginPath();
-    ctx.ellipse(-o.r * 0.28, -o.r * 0.15, o.r * 0.22, o.r * 0.14, -0.4, 0, Math.PI * 2);
+    ctx.roundRect(-w * 0.22, -h / 2 - h * 0.1, w * 0.44, h * 0.12, w * 0.1);
+    ctx.fillStyle = "#c99a1f";
+    ctx.fill();
+    // 充電残量ストライプ（黄色っぽい満タン感）
+    ctx.fillStyle = "#ffd23f";
+    ctx.fillRect(-w * 0.32, -h * 0.32, w * 0.64, h * 0.55);
+    // 雷マーク
+    ctx.beginPath();
+    ctx.moveTo(w * 0.08, -h * 0.28);
+    ctx.lineTo(-w * 0.14, h * 0.02);
+    ctx.lineTo(w * 0.02, h * 0.02);
+    ctx.lineTo(-w * 0.1, h * 0.32);
+    ctx.lineTo(w * 0.2, -h * 0.04);
+    ctx.lineTo(w * 0.04, -h * 0.04);
+    ctx.closePath();
+    ctx.fillStyle = "#7a5200";
     ctx.fill();
   }
 
