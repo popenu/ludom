@@ -71,7 +71,7 @@ let charge = 0;          // 現在のチャージ量 0-100
 let litter = 0;          // 溜まったゴミの数
 let best = Number(localStorage.getItem("staticCatchBest") || 0);
 
-let player = { x: 0, y: 0, r: 0, hairPhase: 0 };
+let player = { x: 0, y: 0, r: 0, hairPhase: 0, rubPhase: 0, swingTimer: 0, swingPower: 0, facing: 1 };
 let pointerTargetX = null;
 let objects = [];        // 落下物
 let particles = [];      // スパーク・エフェクト
@@ -155,11 +155,16 @@ function updatePlayer(dt) {
     // 平方根カーブで序盤から鈍化を体感させ、終盤はほぼ固定に近づける
     const followRate = lerp(0.22, 0.015, Math.sqrt(charge / 100));
     if (pointerTargetX !== null) {
-      player.x += (pointerTargetX - player.x) * followRate;
+      const dx = pointerTargetX - player.x;
+      if (Math.abs(dx) > 2) player.facing = dx > 0 ? 1 : -1;
+      player.x += dx * followRate;
     }
+    // ゴシゴシ：チャージが進むほど震えが速く大きくなる
+    player.rubPhase += dt * lerp(0.015, 0.05, charge / 100);
   }
   player.x = clamp(player.x, player.r, W - player.r);
   player.hairPhase += dt * 0.02;
+  if (player.swingTimer > 0) player.swingTimer = Math.max(0, player.swingTimer - dt);
 }
 
 // -------------------------------------------------------------
@@ -167,11 +172,17 @@ function updatePlayer(dt) {
 // -------------------------------------------------------------
 const PULSE_MIN_R_RATIO = 0.0;
 const PULSE_MAX_R_RATIO = 0.62; // 画面幅に対する最大吸着半径の比率
+const SWING_TOTAL_MS = 520;     // 振り上げ〜振り下ろしアクションの総時間
 
 function dischargePulse() {
   if (!started || gameOver) return;
   const releasedCharge = charge;
-  if (releasedCharge < 3) { charge = 0; return; } // ほぼノーチャージなら何も起きない
+
+  // 離した瞬間は必ず棒を振る（チャージが多いほど大きく振り上げる）
+  player.swingTimer = SWING_TOTAL_MS;
+  player.swingPower = clamp(0.25 + releasedCharge / 100 * 0.75, 0, 1);
+
+  if (releasedCharge < 3) { charge = 0; return; } // ほぼノーチャージなら吸着は発生しない
 
   const radius = lerp(0, W * PULSE_MAX_R_RATIO, releasedCharge / 100);
   pulses.push({ x: player.x, y: player.y, r: 4, maxR: radius, life: 1 });
@@ -353,6 +364,36 @@ function drawBackground() {
   }
 }
 
+// ロッドの角度を状態（安静／ゴシゴシ／振り上げ）から求める
+// 角度は肩ピボットから見た向き。0=真下、負方向=前方へ振り上げ
+function rodAngle() {
+  const facing = player.facing;
+
+  if (player.swingTimer > 0) {
+    const p = 1 - player.swingTimer / SWING_TOTAL_MS; // 0→1
+    const power = player.swingPower;
+    const restA = 0.25;
+    const rubA = 1.05;
+    const upA = -2.55 * power - 0.15; // チャージが多いほど大きく振り上げる
+    if (p < 0.35) {
+      const e = 1 - Math.pow(1 - p / 0.35, 2); // easeOut
+      return lerp(rubA, upA, e) * facing;
+    } else if (p < 0.55) {
+      return upA * facing; // 振り上げた頂点で一瞬静止
+    } else {
+      const e = Math.pow((p - 0.55) / 0.45, 2); // easeIn
+      return lerp(upA, restA, e) * facing;
+    }
+  }
+  if (holding) {
+    const chargeT = charge / 100;
+    const rubBase = 1.05;
+    const amp = lerp(0.05, 0.4, chargeT);
+    return (rubBase + Math.sin(player.rubPhase) * amp) * facing;
+  }
+  return 0.25 * facing;
+}
+
 function drawPlayer() {
   const { x, y, r } = player;
   ctx.save();
@@ -360,26 +401,108 @@ function drawPlayer() {
 
   // 影
   ctx.beginPath();
-  ctx.ellipse(0, r * 0.75, r * 0.9, r * 0.22, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, r * 0.85, r * 0.9, r * 0.2, 0, 0, Math.PI * 2);
   ctx.fillStyle = "#00000055";
   ctx.fill();
 
   const chargeT = charge / 100;
+  const swingActive = player.swingTimer > 0;
+  const swingP = swingActive ? 1 - player.swingTimer / SWING_TOTAL_MS : 0;
+  const peakFlash = swingActive && swingP > 0.3 && swingP < 0.6 ? player.swingPower : 0;
 
-  // チャージ中のオーラ
-  if (charge > 5) {
-    const grad = ctx.createRadialGradient(0, 0, r * 0.4, 0, 0, r * (1.4 + chargeT * 0.8));
-    grad.addColorStop(0, `rgba(126,242,255,${0.25 * chargeT})`);
+  // チャージ中／振り上げ頂点のオーラ
+  const auraT = Math.max(chargeT * (holding ? 1 : 0), peakFlash);
+  if (auraT > 0.05) {
+    const grad = ctx.createRadialGradient(0, -r * 0.3, r * 0.4, 0, -r * 0.3, r * (1.5 + auraT * 1.1));
+    grad.addColorStop(0, `rgba(126,242,255,${0.28 * auraT})`);
     grad.addColorStop(1, "rgba(126,242,255,0)");
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(0, 0, r * (1.4 + chargeT * 0.8), 0, Math.PI * 2);
+    ctx.arc(0, -r * 0.3, r * (1.5 + auraT * 1.1), 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // 体（丸いロボ／キャラ）
+  const facing = player.facing;
+  const legY = r * 0.55, hipY = r * 0.15, chestY = -r * 0.35, headY = -r * 0.95, headR = r * 0.5;
+  const bodyW = r * 0.95;
+
+  // 足
+  ctx.strokeStyle = "#3a2f52";
+  ctx.lineWidth = r * 0.24;
+  ctx.lineCap = "round";
   ctx.beginPath();
-  ctx.arc(0, 0, r, 0, Math.PI * 2);
+  ctx.moveTo(-bodyW * 0.22, hipY); ctx.lineTo(-bodyW * 0.28, legY + r * 0.35);
+  ctx.moveTo(bodyW * 0.22, hipY); ctx.lineTo(bodyW * 0.28, legY + r * 0.35);
+  ctx.stroke();
+
+  // 反対側の腕（体の後ろ、バランスを取る簡単な腕）
+  ctx.strokeStyle = "#3a2f52";
+  ctx.lineWidth = r * 0.18;
+  ctx.beginPath();
+  ctx.moveTo(-facing * bodyW * 0.4, chestY);
+  ctx.lineTo(-facing * bodyW * 0.62, chestY + r * 0.35);
+  ctx.stroke();
+
+  // 胴体
+  ctx.beginPath();
+  ctx.roundRect(-bodyW / 2, chestY, bodyW, r * 0.95, bodyW * 0.32);
+  ctx.fillStyle = "#3a2f52";
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#7ef2ff88";
+  ctx.stroke();
+
+  // ロッドを持つ腕＋ロッド本体（肩ピボットから回転）
+  const shoulderX = facing * bodyW * 0.42, shoulderY = chestY + r * 0.08;
+  const angle = rodAngle();
+  ctx.save();
+  ctx.translate(shoulderX, shoulderY);
+  ctx.rotate(angle);
+  // 腕
+  ctx.strokeStyle = "#3a2f52";
+  ctx.lineWidth = r * 0.2;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, r * 0.55);
+  ctx.stroke();
+  // ロッド
+  const rodLen = r * 1.5;
+  ctx.strokeStyle = "#c9bfe8";
+  ctx.lineWidth = r * 0.11;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(0, r * 0.5);
+  ctx.lineTo(0, r * 0.5 + rodLen);
+  ctx.stroke();
+  // ロッド先端のスパーク球（チャージ／振り上げ中ほど明るく大きく）
+  const tipGlow = Math.max(holding ? chargeT : 0, peakFlash * 1.3);
+  if (tipGlow > 0.04) {
+    const tipY = r * 0.5 + rodLen;
+    const glowR = r * (0.18 + tipGlow * 0.32);
+    const g2 = ctx.createRadialGradient(0, tipY, 0, 0, tipY, glowR);
+    g2.addColorStop(0, "#ffffff");
+    g2.addColorStop(0.4, "#ffe066");
+    g2.addColorStop(1, "rgba(255,224,102,0)");
+    ctx.fillStyle = g2;
+    ctx.beginPath();
+    ctx.arc(0, tipY, glowR, 0, Math.PI * 2);
+    ctx.fill();
+    // ランダムなスパーク粒子
+    if (Math.random() < (holding ? 0.5 : 0.9) * tipGlow) {
+      const a = Math.random() * Math.PI * 2;
+      const wx = shoulderX + Math.sin(angle) * tipY, wy = shoulderY + Math.cos(angle) * tipY;
+      particles.push({
+        x: x + wx, y: y + wy,
+        vx: Math.cos(a) * 0.8, vy: Math.sin(a) * 0.8 - 0.3,
+        life: 1, color: "#7ef2ff", size: 1 + Math.random() * 1.5,
+      });
+    }
+  }
+  ctx.restore();
+
+  // 頭
+  ctx.beginPath();
+  ctx.arc(0, headY, headR, 0, Math.PI * 2);
   ctx.fillStyle = "#3a2f52";
   ctx.fill();
   ctx.lineWidth = 2;
@@ -388,60 +511,50 @@ function drawPlayer() {
 
   // 顔
   ctx.fillStyle = "#f0ecff";
-  for (const ex of [-0.32, 0.32]) {
+  for (const ex of [-0.34, 0.34]) {
     ctx.beginPath();
-    ctx.arc(ex * r, -r * 0.05, r * 0.13, 0, Math.PI * 2);
+    ctx.arc(ex * headR, headY - headR * 0.05, headR * 0.16, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.fillStyle = "#3a2f52";
-  for (const ex of [-0.32, 0.32]) {
+  for (const ex of [-0.34, 0.34]) {
     ctx.beginPath();
-    ctx.arc(ex * r, -r * 0.02, r * 0.06, 0, Math.PI * 2);
+    ctx.arc(ex * headR, headY - headR * 0.02, headR * 0.07, 0, Math.PI * 2);
     ctx.fill();
   }
-  // 口（にこっと）
   ctx.strokeStyle = "#f0ecff";
-  ctx.lineWidth = r * 0.06;
+  ctx.lineWidth = headR * 0.09;
   ctx.beginPath();
-  ctx.arc(0, r * 0.15, r * 0.28, 0.15 * Math.PI, 0.85 * Math.PI);
+  ctx.arc(0, headY + headR * 0.22, headR * 0.32, 0.15 * Math.PI, 0.85 * Math.PI);
   ctx.stroke();
 
-  // 髪：チャージが溜まるほど逆立つ（静電気の定番演出）
+  // 髪：チャージ（または振り上げの勢い）が強いほど逆立つ
+  const hairT = Math.max(holding ? chargeT : 0, peakFlash);
   const strands = 7;
   for (let i = 0; i < strands; i++) {
     const t = i / (strands - 1);
     const baseAngle = lerp(-1.15, 1.15, t) - Math.PI / 2;
-    const flat = 0.14; // ほぼ寝た状態
-    const spiky = 0.62 + Math.sin(player.hairPhase * 3 + i) * 0.05 * chargeT;
-    const len = r * lerp(flat, spiky, chargeT) * (1 + Math.sin(player.hairPhase * 2 + i * 1.3) * 0.08 * chargeT);
-    const jitter = chargeT > 0.3 ? (Math.random() - 0.5) * 0.12 * chargeT : 0;
+    const flat = 0.16;
+    const spiky = 0.66 + Math.sin(player.hairPhase * 3 + i) * 0.05 * hairT;
+    const len = headR * lerp(flat, spiky, hairT) * (1 + Math.sin(player.hairPhase * 2 + i * 1.3) * 0.08 * hairT);
+    const jitter = hairT > 0.3 ? (Math.random() - 0.5) * 0.12 * hairT : 0;
     const ang = baseAngle + jitter;
-    const rootX = Math.cos(baseAngle) * r * 0.86;
-    const rootY = Math.sin(baseAngle) * r * 0.86;
+    const rootX = Math.cos(baseAngle) * headR * 0.9;
+    const rootY = headY + Math.sin(baseAngle) * headR * 0.9;
     const tipX = rootX + Math.cos(ang) * len;
     const tipY = rootY + Math.sin(ang) * len;
-    ctx.strokeStyle = chargeT > 0.75 ? "#ffe066" : "#c9bfe8";
-    ctx.lineWidth = Math.max(1.4, r * 0.045);
+    ctx.strokeStyle = hairT > 0.75 ? "#ffe066" : "#c9bfe8";
+    ctx.lineWidth = Math.max(1.3, headR * 0.09);
     ctx.beginPath();
     ctx.moveTo(rootX, rootY);
     ctx.lineTo(tipX, tipY);
     ctx.stroke();
-    if (chargeT > 0.7 && Math.random() < 0.5) {
+    if (hairT > 0.7 && Math.random() < 0.5) {
       ctx.fillStyle = "#ffe066";
       ctx.beginPath();
-      ctx.arc(tipX, tipY, r * 0.045, 0, Math.PI * 2);
+      ctx.arc(tipX, tipY, headR * 0.08, 0, Math.PI * 2);
       ctx.fill();
     }
-  }
-
-  // ランダムなスパーク粒子（チャージ中）
-  if (holding && charge > 8 && Math.random() < 0.6) {
-    const a = Math.random() * Math.PI * 2;
-    particles.push({
-      x: x + Math.cos(a) * r * 1.1, y: y + Math.sin(a) * r * 1.1,
-      vx: Math.cos(a) * 0.6, vy: Math.sin(a) * 0.6 - 0.3,
-      life: 1, color: "#7ef2ff", size: 1 + Math.random() * 1.5,
-    });
   }
 
   ctx.restore();
