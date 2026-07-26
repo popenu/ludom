@@ -1,6 +1,6 @@
 // ===================================================================
 // バチバチキャッチャー (Static Catch)
-// 押してチャージ→離して静電吸着で鉄屑を引き寄せるアーケードゲーム
+// 押してチャージ→離して静電気で鉄屑を弾き飛ばし、川に落とさず守るアーケードゲーム
 // Canvas 2D（自前の簡易物理）+ Supabase ランキング
 // ===================================================================
 
@@ -51,7 +51,7 @@ const rankingListEl = document.getElementById("ranking-list");
 // -------------------------------------------------------------
 // 落下物タイプ定義
 // -------------------------------------------------------------
-// reqCharge: 吸着に必要な放電量(%)。null=パルスでは吸着できない特殊アイテム
+// reqCharge: 弾き飛ばすために必要な放電量(%)。null=パルスに反応しない特殊アイテム
 const TYPES = {
   light:   { reqCharge: 10,  score: 10,  rBase: 0.028, speed: [1.3, 1.9], color: "#e7e2f5", label: "紙くず" },
   medium:  { reqCharge: 50,  score: 30,  rBase: 0.042, speed: [1.6, 2.3], color: "#b9c2d6", label: "空き缶" },
@@ -167,10 +167,10 @@ function updatePlayer(dt) {
 }
 
 // -------------------------------------------------------------
-// 放電パルス（吸着）
+// 放電パルス（弾き飛ばし）
 // -------------------------------------------------------------
 const PULSE_MIN_R_RATIO = 0.0;
-const PULSE_MAX_R_RATIO = 0.62; // 画面幅に対する最大吸着半径の比率
+const PULSE_MAX_R_RATIO = 0.62; // 画面幅に対する最大反応半径の比率
 const FLASH_MS = 260;           // 放電した瞬間の体の発光フラッシュ時間
 
 function dischargePulse() {
@@ -181,20 +181,29 @@ function dischargePulse() {
   player.flashTimer = FLASH_MS * clamp(0.3 + releasedCharge / 100 * 0.7, 0, 1);
   spawnSparkBurst(player.x, player.y, "#7ef2ff");
 
-  if (releasedCharge < 3) { charge = 0; return; } // ほぼノーチャージなら吸着は発生しない
+  if (releasedCharge < 3) { charge = 0; return; } // ほぼノーチャージなら弾きは発生しない
 
   const radius = lerp(0, W * PULSE_MAX_R_RATIO, releasedCharge / 100);
   pulses.push({ x: player.x, y: player.y, r: 4, maxR: radius, life: 1 });
 
   for (const o of objects) {
-    if (o.dead || o.type === "battery") continue;
+    if (o.dead || o.repelled || o.type === "battery") continue;
     const d = Math.hypot(o.x - player.x, o.y - player.y);
     if (d > radius) continue;
     const def = TYPES[o.type];
     if (def.reqCharge <= releasedCharge) {
-      o.caught = true; // 引き寄せアニメーション開始
+      // 弾き飛ばし成功：川に落とさず守れた分だけ即加点し、上向きに吹っ飛ばす
+      addScore(def.score);
+      const dx = o.x - player.x;
+      const dist = Math.hypot(dx, o.y - player.y) || 1;
+      const knockSpeed = lerp(7, 13, releasedCharge / 100) * (H / 700);
+      o.repelled = true;
+      o.vx = (dx / dist) * knockSpeed * 0.5;
+      o.vy = -knockSpeed; // 川から遠ざけるように上向きへ強く弾く
+      o.spinV = rand(0.15, 0.35) * (Math.random() < 0.5 ? -1 : 1);
+      spawnSparkBurst(o.x, o.y, "#ffe066");
     } else {
-      spawnSparkFizzle(o.x, o.y); // パワー不足：弾かれる演出
+      spawnSparkFizzle(o.x, o.y); // パワー不足：弾ききれず落下を続ける
     }
   }
   charge = 0;
@@ -226,7 +235,7 @@ function spawnObject() {
   const r = W * def.rBase;
   const x = rand(r + 4, W - r - 4);
   const speed = rand(def.speed[0], def.speed[1]) * (H / 700) * lerp(1, 1.4, diff());
-  objects.push({ type, x, y: -r - 4, r, vy: speed, caught: false, dead: false, spin: rand(0, Math.PI * 2) });
+  objects.push({ type, x, y: -r - 4, r, vy: speed, repelled: false, dead: false, spin: rand(0, Math.PI * 2) });
 }
 
 // -------------------------------------------------------------
@@ -243,16 +252,14 @@ function updateObjects(dt) {
   for (const o of objects) {
     if (o.dead) continue;
 
-    if (o.caught) {
-      // 吸着アニメーション：プレイヤーへ吸い込まれる
-      const d = Math.hypot(player.x - o.x, player.y - o.y);
-      const pull = Math.max(14, d * 0.35);
-      o.x += (player.x - o.x) / (d || 1) * pull;
-      o.y += (player.y - o.y) / (d || 1) * pull;
-      if (d < player.r * 0.6) {
+    if (o.repelled) {
+      // 弾き飛ばされた後：初速のまま吹っ飛んでいき、画面外に出たら消える（戻ってこない）
+      const k = dt / 16.67;
+      o.x += o.vx * k;
+      o.y += o.vy * k;
+      o.spin += (o.spinV || 0.2) * k;
+      if (o.y + o.r < -30 || o.y - o.r > H + 30 || o.x + o.r < -30 || o.x - o.r > W + 30) {
         o.dead = true;
-        addScore(TYPES[o.type].score);
-        spawnSparkBurst(player.x, player.y, "#7ef2ff");
       }
       continue;
     }
@@ -272,11 +279,11 @@ function updateObjects(dt) {
       } else if (o.type === "heavy") {
         if (overlapX) {
           o.dead = true;
-          triggerGameOver("頭に直撃！", "ドラム缶を吸着しきれなかった…");
+          triggerGameOver("頭に直撃！", "ドラム缶を弾き切れなかった…");
           return;
         } else {
           o.dead = true;
-          addLitter(2); // ドラム缶を取りこぼすと大きめのペナルティ
+          addLitter(2); // ドラム缶を弾き損ねて川に落とすと大きめのペナルティ
         }
       } else {
         o.dead = true;
@@ -298,7 +305,7 @@ function addLitter(v) {
   litter += v;
   updateLitterUI();
   if (litter >= LITTER_MAX) {
-    triggerGameOver("鉄屑があふれた！", "コンテナの底に鉄屑が溜まりすぎました。");
+    triggerGameOver("鉄屑が川に落ちすぎた！", "弾ききれなかった鉄屑が川底に溜まりすぎました。");
   }
 }
 
@@ -361,9 +368,18 @@ function drawBackground() {
   for (let y = 0; y < H; y += grid) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
   }
+
+  // 川面より下：うっすら青いグラデーションで「水中」を示す
+  const waterY = player.y + player.r * 0.7;
+  if (waterY < H) {
+    const wg = ctx.createLinearGradient(0, waterY, 0, H);
+    wg.addColorStop(0, "#0a3a5a33");
+    wg.addColorStop(1, "#0a3a5a77");
+    ctx.fillStyle = wg;
+    ctx.fillRect(0, waterY, W, H - waterY);
+  }
 }
 
-// ロッドの角度を状態（安静／ゴシゴシ／振り上げ）から求める
 function drawPlayer() {
   const { x, y, r, facing } = player;
   ctx.save();
@@ -638,14 +654,18 @@ function drawParticles() {
 }
 
 function drawGroundLine() {
+  // 川の水面ライン：ゆらゆらと波打たせる
   const y = player.y + player.r * 0.7;
-  ctx.strokeStyle = "#ffffff1a";
-  ctx.setLineDash([5, 7]);
+  const t = performance.now() / 500;
+  ctx.strokeStyle = "#5ec8ffaa";
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(0, y);
-  ctx.lineTo(W, y);
+  const step = 14;
+  for (let x = 0; x <= W; x += step) {
+    const wy = y + Math.sin(x * 0.06 + t) * 2.5;
+    x === 0 ? ctx.moveTo(x, wy) : ctx.lineTo(x, wy);
+  }
   ctx.stroke();
-  ctx.setLineDash([]);
 }
 
 function draw() {
