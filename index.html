@@ -187,11 +187,19 @@
           <!-- 畳 -->
           <rect x="0" y="96" width="200" height="29" fill="#d8c290"/>
           <line x1="0" y1="96" x2="200" y2="96" stroke="#b8a06a" stroke-width="2"/>
-          <!-- 積み上がった布団タワー -->
-          <rect x="72" y="82" width="56" height="14" rx="6" fill="#f5deae" stroke="#c08a3e" stroke-width="1.5"/>
-          <rect x="66" y="66" width="68" height="17" rx="7" fill="#fff6ea" stroke="#ffb08a" stroke-width="1.5"/>
-          <rect x="70" y="48" width="60" height="19" rx="8" fill="#f3ecff" stroke="#c3a6ff" stroke-width="1.5"/>
-          <rect x="64" y="28" width="72" height="21" rx="9" fill="#fffaf2" stroke="#ffc7e0" stroke-width="1.5"/>
+          <!-- 積み上がった布団タワー（布団は1種類のみ） -->
+          <g fill="#fff6ea" stroke="#ffb08a" stroke-width="1.5">
+            <rect x="70" y="82" width="60" height="16" rx="7"/>
+            <rect x="70" y="65" width="60" height="16" rx="7"/>
+            <rect x="70" y="48" width="60" height="16" rx="7"/>
+            <rect x="70" y="31" width="60" height="16" rx="7"/>
+          </g>
+          <g stroke="#ffb08a" stroke-width="1.2" opacity="0.7">
+            <line x1="82" y1="90" x2="118" y2="90"/>
+            <line x1="82" y1="73" x2="118" y2="73"/>
+            <line x1="82" y1="56" x2="118" y2="56"/>
+            <line x1="82" y1="39" x2="118" y2="39"/>
+          </g>
           <!-- ドロッパー -->
           <line x1="100" y1="6" x2="100" y2="16" stroke="#c9a06c" stroke-width="2"/>
           <rect x="82" y="14" width="36" height="12" rx="6" fill="#fff6ea" stroke="#ffb08a" stroke-width="1.5"/>
