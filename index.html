@@ -130,29 +130,41 @@
     <!-- バチバチガード -->
     <a class="card playable" href="static-catch/">
       <div class="thumb">
-        <!-- 静電気で逆立つキャラ＋降ってくる金属ゴミ -->
+        <!-- 電気ナマズ＋川に落ちてくる金属ゴミ・電池 -->
         <svg viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
           <rect x="0" y="0" width="200" height="125" fill="#150e24"/>
-          <!-- 落下物 -->
-          <rect x="30" y="20" width="14" height="18" rx="3" fill="#8a6a52" transform="rotate(15 37 29)"/>
-          <rect x="140" y="15" width="12" height="16" rx="3" fill="#b9c2d6"/>
-          <path d="M100,18 Q108,32 100,42 Q92,32 100,18 Z" fill="#5ec8ff"/>
-          <!-- キャラ本体 -->
-          <circle cx="100" cy="95" r="20" fill="#3a2f52" stroke="#7ef2ff" stroke-width="1.5"/>
-          <circle cx="94" cy="93" r="2.4" fill="#f0ecff"/>
-          <circle cx="106" cy="93" r="2.4" fill="#f0ecff"/>
-          <path d="M92,101 Q100,107 108,101" stroke="#f0ecff" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <!-- 逆立つ髪＋スパーク -->
-          <g stroke="#ffe066" stroke-width="2" stroke-linecap="round">
-            <line x1="100" y1="76" x2="100" y2="58"/>
-            <line x1="88" y1="79" x2="76" y2="64"/>
-            <line x1="112" y1="79" x2="124" y2="64"/>
-            <line x1="80" y1="86" x2="66" y2="78"/>
-            <line x1="120" y1="86" x2="134" y2="78"/>
+          <!-- 川面より下：うっすら青い水中 -->
+          <rect x="0" y="100" width="200" height="25" fill="#0a3a5a55"/>
+          <!-- 落下物：紙くず・ドラム缶・電池 -->
+          <path d="M96,14 L104,12 L110,18 L106,24 L98,23 Z" fill="#e7e2f5"/>
+          <rect x="30" y="16" width="17" height="21" rx="4" fill="#8a6a52" stroke="#4a3826" stroke-width="1.5" transform="rotate(-10 38 26)"/>
+          <g transform="translate(152,20)">
+            <rect x="-7" y="-11" width="14" height="22" rx="4" fill="#fff3c4" stroke="#c99a1f" stroke-width="1.2"/>
+            <rect x="-3" y="-14" width="6" height="4" rx="1.5" fill="#c99a1f"/>
+            <path d="M1,-8 L-2,0 L0.5,0 L-1.5,7 L4,-1 L1,-1 Z" fill="#7a5200"/>
           </g>
-          <circle cx="100" cy="56" r="2.2" fill="#ffe066"/>
-          <circle cx="74" cy="62" r="2" fill="#ffe066"/>
-          <circle cx="126" cy="62" r="2" fill="#ffe066"/>
+          <!-- 川の水面ライン -->
+          <path d="M0,100 Q17,96 34,100 T68,100 T102,100 T136,100 T170,100 T200,100" stroke="#5ec8ffaa" stroke-width="2" fill="none"/>
+          <!-- 電気ナマズ本体 -->
+          <g transform="translate(100,92)">
+            <!-- 尾びれ -->
+            <path d="M-20,0 L-38,-11 L-27,0 L-38,11 Z" fill="#2f2650" stroke="#7ef2ff77" stroke-width="1"/>
+            <!-- 背びれ -->
+            <path d="M-2,-15 L7,-15 L1,-24 Z" fill="#2f2650"/>
+            <!-- 胴体 -->
+            <ellipse cx="0" cy="0" rx="26" ry="15" fill="#3a2f52" stroke="#7ef2ff" stroke-width="1.5"/>
+            <ellipse cx="1" cy="5" rx="16" ry="6" fill="#4a3d6a"/>
+            <!-- ヒゲ -->
+            <path d="M20,4 Q34,10 30,22" stroke="#ffe066" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M20,-2 Q36,-2 34,10" stroke="#c9bfe8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- 目・口 -->
+            <circle cx="15" cy="-4" r="3.6" fill="#f0ecff"/>
+            <circle cx="16.5" cy="-4" r="1.8" fill="#22192f"/>
+            <path d="M18,3 Q23,6 26,2" stroke="#22192f" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+            <!-- スパーク -->
+            <circle cx="-6" cy="-20" r="1.6" fill="#ffe066"/>
+            <circle cx="8" cy="-22" r="1.3" fill="#7ef2ff"/>
+          </g>
         </svg>
       </div>
       <div class="card-body">
@@ -187,7 +199,7 @@
       </div>
       <div class="card-body">
         <div class="card-title">布団タワー</div>
-        <div class="card-sub">タイミングよく布団を落として積み上げろ。ツルツル絹布団の扱いには要注意。</div>
+        <div class="card-sub">タイミングよく布団を落として積み上げろ。1枚でも落ちたら即ゲームオーバー。</div>
         <div class="card-tags">
           <span class="tag">物理パズル</span>
           <span class="tag">ワンタップ</span>
