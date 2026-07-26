@@ -56,7 +56,7 @@ const TYPES = {
   light:  { reqCharge: 10,  score: 10,  rBase: 0.028, speed: [1.3, 1.9], color: "#e7e2f5", label: "紙くず" },
   medium: { reqCharge: 50,  score: 30,  rBase: 0.042, speed: [1.6, 2.3], color: "#b9c2d6", label: "空き缶" },
   heavy:  { reqCharge: 100, score: 100, rBase: 0.062, speed: [1.5, 2.0], color: "#8a6a52", label: "ドラム缶" },
-  water:  { reqCharge: null, score: 0,  rBase: 0.026, speed: [2.2, 3.0], color: "#5ec8ff", label: "水滴" },
+  water:  { reqCharge: null, score: 0,  rBase: 0.03, speed: [2.2, 3.0], color: "#1f6fd6", label: "水滴" },
 };
 
 const LITTER_MAX = 8; // これを超えるとゲームオーバー
@@ -574,15 +574,23 @@ function drawObject(o) {
     ctx.roundRect(-w / 2, -h / 2, w, h, w * 0.18);
     ctx.stroke();
   } else if (o.type === "water") {
-    ctx.fillStyle = def.color + "cc";
+    // 水滴：スパークの水色と混同しないよう、はっきり深い青＋輪郭で「水」だと分かるように
     ctx.beginPath();
     ctx.moveTo(0, -o.r * 1.3);
     ctx.quadraticCurveTo(o.r, 0, 0, o.r);
     ctx.quadraticCurveTo(-o.r, 0, 0, -o.r * 1.3);
+    const g = ctx.createLinearGradient(0, -o.r, 0, o.r);
+    g.addColorStop(0, "#5aa8f0");
+    g.addColorStop(1, def.color);
+    ctx.fillStyle = g;
     ctx.fill();
-    ctx.fillStyle = "#ffffff77";
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "#0d3a80";
+    ctx.stroke();
+    // ハイライト（つや）
+    ctx.fillStyle = "#ffffffbb";
     ctx.beginPath();
-    ctx.arc(-o.r * 0.25, -o.r * 0.1, o.r * 0.2, 0, Math.PI * 2);
+    ctx.ellipse(-o.r * 0.28, -o.r * 0.15, o.r * 0.22, o.r * 0.14, -0.4, 0, Math.PI * 2);
     ctx.fill();
   }
 
