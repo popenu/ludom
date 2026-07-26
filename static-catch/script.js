@@ -170,7 +170,7 @@ function updatePlayer(dt) {
 // 放電パルス（弾き飛ばし）
 // -------------------------------------------------------------
 const PULSE_MIN_R_RATIO = 0.0;
-const PULSE_MAX_R_RATIO = 0.62; // 画面幅に対する最大反応半径の比率
+const PULSE_MAX_R_RATIO = 0.5; // 画面幅に対する最大反応半径の比率
 const FLASH_MS = 260;           // 放電した瞬間の体の発光フラッシュ時間
 
 function dischargePulse() {
