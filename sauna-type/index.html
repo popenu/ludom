@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サウナ診断 | Sauna Type</title>
+<meta name="description" content="12の質問で、あなたのサウナタイプを8種類から診断。温度・水風呂・スタイルの3軸で、サ道の求道者からサ飯の座長まで。1分で終わります。">
+<meta property="og:title" content="サウナ診断 | あなたは8タイプのどれ？">
+<meta property="og:description" content="温度・水風呂・スタイルの3軸で診断。1分で終わります。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">サウナ<span>診断</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-emoji">🧖</div>
+        <h2 class="start-title">あなたは、<br>どんなサウナー？</h2>
+        <p class="start-lead">
+          温度・水風呂・スタイルの3つの軸で、あなたのサウナタイプを<strong>8種類</strong>から診断します。
+        </p>
+        <ul class="start-meta">
+          <li>⏱ 12問・約1分</li>
+          <li>🔒 回答は保存されません</li>
+        </ul>
+        <button id="btn-start" class="btn-primary">診断をはじめる</button>
+        <button id="btn-catalog" class="btn-ghost">タイプ一覧を見る</button>
+      </div>
+    </section>
+
+    <!-- ===== 質問画面 ===== -->
+    <section id="screen-quiz" class="screen hidden">
+      <div class="progress">
+        <div class="progress-label"><span id="q-index">1</span> / <span id="q-total">12</span></div>
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+      </div>
+      <div class="card quiz-card" id="quiz-card">
+        <div class="q-axis" id="q-axis"></div>
+        <h2 class="q-text" id="q-text"></h2>
+        <div class="q-options" id="q-options"></div>
+        <button id="btn-back" class="btn-link">← ひとつ前の質問へ</button>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card" id="result-card">
+        <div class="result-kicker" id="result-kicker">あなたのサウナタイプは</div>
+        <div class="result-emoji" id="result-emoji"></div>
+        <div class="result-code" id="result-code"></div>
+        <h2 class="result-name" id="result-name"></h2>
+        <p class="result-catch" id="result-catch"></p>
+        <p class="result-desc" id="result-desc"></p>
+
+        <div class="axes" id="result-axes"></div>
+
+        <dl class="result-facts">
+          <div><dt>必殺技</dt><dd id="result-skill"></dd></div>
+          <div><dt>おすすめ施設</dt><dd id="result-place"></dd></div>
+          <div><dt>あるある</dt><dd id="result-aruaru"></dd></div>
+        </dl>
+
+        <div class="compat">
+          <div class="compat-item good">
+            <div class="compat-label">相性◎</div>
+            <button class="compat-type" id="compat-good"></button>
+          </div>
+          <div class="compat-item bad">
+            <div class="compat-label">相性△</div>
+            <button class="compat-type" id="compat-bad"></button>
+          </div>
+        </div>
+
+        <div class="share" id="share-box">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">🔗 結果リンクをコピー</button>
+          <div class="share-note" id="share-note"></div>
+        </div>
+
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-ghost">🔄 もう一度診断する</button>
+          <button id="btn-my-result" class="btn-ghost hidden">← 自分の結果に戻る</button>
+        </div>
+      </div>
+
+      <h3 class="catalog-title">全8タイプ</h3>
+      <div class="catalog" id="catalog"></div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
