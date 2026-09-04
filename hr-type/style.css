@@ -1,0 +1,284 @@
+/* ===================================================
+   HRタイプ診断 - スタイルシート
+   ギルドの登録証のような、落ち着いた紙×インディゴ。
+   4つの領域（採用・組織・制度・労務）はキャラの服の色に合わせた4色。
+=================================================== */
+
+:root {
+  --bg-page: #eef0f4;
+  --bg-card: #ffffff;
+  --bg-soft: #f4f5f9;
+  --line: #d9dde6;
+  --ink: #1f2333;
+  --ink-2: #4b5266;
+  --ink-3: #7d8496;
+  --indigo: #3b4cc0;
+  --indigo-soft: #e4e8fb;
+  --gold: #b8860b;
+  --row-orange: #d9642a; --row-orange-bg: #fdebe0;
+  --row-green:  #2e8b57; --row-green-bg:  #e2f3e8;
+  --row-blue:   #2f5fd6; --row-blue-bg:   #e1e9fb;
+  --row-navy:   #2b3f6b; --row-navy-bg:   #e3e8f1;
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 0% 0%, #3b4cc012 0%, transparent 45%),
+    radial-gradient(circle at 100% 100%, #d9642a10 0%, transparent 45%),
+    var(--bg-page);
+  background-attachment: fixed;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+h1, h2, h3, .logo, .result-name, .q-text, .start-title {
+  font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+}
+
+#app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 12px 16px 32px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- ヘッダー ---------- */
+#page-header { text-align: center; padding: 10px 0 18px; }
+.logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--indigo);
+}
+.logo span { color: var(--ink); font-weight: 700; font-size: 1.1rem; margin-left: 4px; }
+
+#page-main { flex: 1; }
+
+/* ---------- 共通 ---------- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: 0 12px 40px #1f233314;
+}
+
+.btn-primary, .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.btn-primary {
+  border: none;
+  color: #fff;
+  background: var(--indigo);
+  box-shadow: 0 8px 20px #3b4cc044;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 26px #3b4cc055; }
+.btn-ghost {
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: transparent;
+}
+.btn-ghost:hover { background: var(--bg-soft); }
+.btn-ghost.small { width: auto; padding: 8px 16px; font-size: 0.85rem; }
+.btn-link {
+  background: none; border: none;
+  color: var(--ink-3);
+  font-family: inherit; font-size: 0.85rem;
+  cursor: pointer; padding: 8px 0;
+}
+.btn-link:hover { color: var(--indigo); }
+.btn-link:disabled { opacity: 0.3; cursor: default; }
+.hidden { display: none !important; }
+.pc-only { display: inline; }
+
+.screen { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .screen, .quiz-card { animation: none !important; } }
+
+/* ---------- スタート画面 ---------- */
+.start-card { text-align: center; }
+.start-eyebrow {
+  font-size: 0.75rem; letter-spacing: 0.2em; font-weight: 700;
+  color: var(--indigo); margin-bottom: 10px;
+}
+.start-title { font-size: 1.8rem; font-weight: 900; line-height: 1.3; margin-bottom: 14px; }
+.start-lead { color: var(--ink-2); font-size: 0.95rem; margin-bottom: 18px; }
+.start-lead strong { color: var(--indigo); }
+.start-strip {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  margin: 0 0 18px;
+}
+.start-strip img {
+  width: 100%; aspect-ratio: 1; object-fit: cover;
+  border-radius: 10px; background: #fff; border: 1px solid var(--line);
+}
+.start-meta {
+  list-style: none;
+  display: flex; justify-content: center; gap: 16px;
+  font-size: 0.8rem; color: var(--ink-3);
+  margin-bottom: 22px;
+}
+.start-card .btn-primary { margin-bottom: 10px; }
+.start-note { font-size: 0.75rem; color: var(--ink-3); margin-top: 16px; line-height: 1.6; }
+
+/* ---------- 質問画面 ---------- */
+.progress { margin-bottom: 14px; }
+.progress-label { font-size: 0.8rem; color: var(--ink-3); margin-bottom: 6px; text-align: right; font-variant-numeric: tabular-nums; }
+.progress-bar { height: 6px; background: #dfe2ea; border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0%; background: var(--indigo); transition: width 0.3s ease; }
+
+.quiz-card { animation: slideIn 0.25s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+.q-number { font-size: 0.75rem; letter-spacing: 0.15em; color: var(--indigo); font-weight: 700; margin-bottom: 8px; }
+.q-text { font-size: 1.25rem; font-weight: 700; line-height: 1.5; margin-bottom: 22px; }
+.q-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+.option {
+  width: 100%; text-align: left;
+  padding: 16px 18px; border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--ink);
+  font-family: inherit; font-size: 1rem; line-height: 1.5;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease, transform 0.12s ease;
+}
+.option:hover { border-color: var(--indigo); background: var(--indigo-soft); transform: translateX(4px); }
+.option:active { transform: scale(0.98); }
+.option:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+
+/* ---------- 結果画面 ---------- */
+.result-card { text-align: center; }
+.result-kicker { font-size: 0.85rem; color: var(--ink-3); margin-bottom: 8px; }
+.result-figure { margin: 0 auto 6px; }
+.result-figure img {
+  width: 240px; height: 240px; max-width: 70vw; max-height: 70vw;
+  object-fit: contain; border-radius: 24px;
+}
+.result-code {
+  display: inline-block;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.85rem; letter-spacing: 0.3em; font-weight: 700;
+  color: var(--gold);
+  border: 1px solid #b8860b55; border-radius: 999px;
+  padding: 2px 12px 2px 16px; margin-bottom: 10px;
+}
+.result-name { font-size: 1.9rem; font-weight: 900; line-height: 1.3; margin-bottom: 6px; }
+.result-catch { font-size: 1rem; color: var(--indigo); font-weight: 700; margin-bottom: 14px; }
+.result-note {
+  font-size: 0.78rem; color: var(--ink-3);
+  background: var(--bg-soft); border-radius: 10px;
+  padding: 8px 12px; margin-bottom: 16px;
+}
+.result-desc { text-align: left; font-size: 0.95rem; margin-bottom: 22px; }
+
+/* 軸バー */
+.axes { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+.axis { text-align: left; }
+.axis-name { font-size: 0.72rem; color: var(--ink-3); letter-spacing: 0.1em; }
+.axis-labels { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; }
+.axis-labels .on { color: var(--indigo); }
+.axis-labels .off { color: var(--ink-3); opacity: 0.7; }
+.axis-bar { position: relative; height: 10px; border-radius: 999px; background: #e6e8ef; margin: 6px 0 2px; overflow: hidden; }
+.axis-fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--indigo); }
+
+/* 持ち味など */
+.result-facts { text-align: left; display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.result-facts > div { background: var(--bg-soft); border-radius: 12px; padding: 10px 14px; }
+.result-facts dt { font-size: 0.72rem; letter-spacing: 0.15em; color: var(--indigo); font-weight: 700; margin-bottom: 2px; }
+.result-facts dd { font-size: 0.92rem; }
+
+/* 組むと強い相手 */
+.partner { text-align: left; margin-bottom: 18px; }
+.partner-label { font-size: 0.72rem; letter-spacing: 0.15em; color: var(--indigo); font-weight: 700; margin-bottom: 6px; }
+.partner-type {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 10px 14px 10px 10px;
+  border: 1px solid var(--line); border-radius: 14px;
+  background: var(--bg-card); color: var(--ink);
+  font-family: inherit; cursor: pointer; text-align: left;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+.partner-type:hover { border-color: var(--indigo); transform: translateY(-2px); }
+.partner-type img { width: 56px; height: 56px; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.partner-text { display: flex; flex-direction: column; flex: 1; }
+.partner-text > span:first-child { font-weight: 700; font-size: 1rem; }
+.partner-code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--gold); }
+.partner-arrow { color: var(--ink-3); }
+
+/* 自己紹介テンプレ */
+.intro {
+  text-align: left;
+  background: var(--indigo-soft);
+  border-radius: 14px; padding: 14px 16px;
+  margin-bottom: 22px;
+}
+.intro-label { font-size: 0.72rem; letter-spacing: 0.15em; color: var(--indigo); font-weight: 700; margin-bottom: 6px; }
+.intro-text { font-size: 0.95rem; margin-bottom: 10px; }
+
+/* シェア */
+.share { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.share-note { font-size: 0.78rem; color: var(--indigo); word-break: break-all; }
+.share-note:empty { display: none; }
+.result-actions { display: flex; flex-direction: column; gap: 10px; }
+
+/* 16タイプ一覧 */
+.catalog-title {
+  font-size: 1rem; font-weight: 700;
+  margin: 28px 0 12px; padding-left: 10px;
+  border-left: 3px solid var(--indigo);
+}
+.catalog { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.catalog-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px 8px 8px;
+  background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px;
+  color: var(--ink); font-family: inherit; text-align: left; cursor: pointer;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+.catalog-item:hover { border-color: var(--indigo); transform: translateY(-2px); }
+.catalog-item.current { border-color: var(--indigo); box-shadow: 0 0 0 1px var(--indigo) inset; }
+.catalog-item img { width: 48px; height: 48px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); background: #fff; flex-shrink: 0; }
+.catalog-name { font-size: 0.85rem; font-weight: 700; line-height: 1.3; }
+.catalog-code { display: block; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--gold); }
+.catalog-item[data-row="採用系"] { border-left: 4px solid var(--row-orange); }
+.catalog-item[data-row="組織系"] { border-left: 4px solid var(--row-green); }
+.catalog-item[data-row="制度系"] { border-left: 4px solid var(--row-blue); }
+.catalog-item[data-row="労務系"] { border-left: 4px solid var(--row-navy); }
+
+/* ---------- フッター ---------- */
+#page-footer { text-align: center; padding-top: 28px; font-size: 0.75rem; color: var(--ink-3); line-height: 1.6; }
+#page-footer .credit { margin-top: 6px; }
+
+/* ---------- レスポンシブ ---------- */
+@media (max-width: 480px) {
+  .card { padding: 22px 18px; }
+  .start-title { font-size: 1.5rem; }
+  .pc-only { display: none; }
+  .q-text { font-size: 1.1rem; }
+  .result-name { font-size: 1.6rem; }
+  .catalog { grid-template-columns: 1fr 1fr; }
+  .catalog-item { padding: 6px 8px; gap: 8px; }
+  .catalog-item img { width: 40px; height: 40px; }
+  .catalog-name { font-size: 0.78rem; }
+}
