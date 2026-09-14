@@ -13,5 +13,3 @@ credentials.json
 # Claude Code のローカル設定
 .claude/
 
-# HRタイプ診断 キャラ画像の元データ（2048px, 20MB）はコミットしない
-hr-type/img-src/
