@@ -1,0 +1,2 @@
+# HRタイプ診断は人事界隈(仮)のサイトへ移設した。旧URLを新URLへ転送する
+/hr-type/*  https://hr-kaiwai.popenu.workers.dev/hr-type/:splat  302
