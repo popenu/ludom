@@ -1,7 +1,7 @@
 /* ===================================================
    HRタイプ診断 - スタイルシート
    ギルドの登録証のような、落ち着いた紙×インディゴ。
-   4つの領域（採用・組織・制度・労務）はキャラの服の色に合わせた4色。
+   4つの領域（採用・組織・制度・労務）はキャラの服の色に合わせた4色（オレンジ・グリーン・ブルー・パープル）。
 =================================================== */
 
 :root {
@@ -18,7 +18,7 @@
   --row-orange: #d9642a; --row-orange-bg: #fdebe0;
   --row-green:  #2e8b57; --row-green-bg:  #e2f3e8;
   --row-blue:   #2f5fd6; --row-blue-bg:   #e1e9fb;
-  --row-navy:   #2b3f6b; --row-navy-bg:   #e3e8f1;
+  --row-purple: #6b3fa0; --row-purple-bg: #ece3f7;
   --radius: 18px;
 }
 
@@ -264,7 +264,7 @@ h1, h2, h3, .logo, .result-name, .q-text, .start-title {
 .catalog-item[data-row="採用系"] { border-left: 4px solid var(--row-orange); }
 .catalog-item[data-row="組織系"] { border-left: 4px solid var(--row-green); }
 .catalog-item[data-row="制度系"] { border-left: 4px solid var(--row-blue); }
-.catalog-item[data-row="労務系"] { border-left: 4px solid var(--row-navy); }
+.catalog-item[data-row="労務系"] { border-left: 4px solid var(--row-purple); }
 
 /* ---------- フッター ---------- */
 #page-footer { text-align: center; padding-top: 28px; font-size: 0.75rem; color: var(--ink-3); line-height: 1.6; }
