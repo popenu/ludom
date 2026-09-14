@@ -69,6 +69,9 @@ const QUESTIONS = [
     b: { text: "監督の采配や戦略", side: "right" } },
 ];
 
+// 設問番号の漢数字（其の一 〜 其の十六）
+const KANJI = ["一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五","十六"];
+
 const IMG_DIR = "img/";
 const imgSrc = (code) => `${IMG_DIR}${code}.jpg`;
 
@@ -101,7 +104,7 @@ function renderQuestion() {
   const q = QUESTIONS[current];
   $("q-index").textContent = current + 1;
   $("progress-fill").style.width = `${(current / QUESTIONS.length) * 100}%`;
-  $("q-number").textContent = `Q${current + 1}`;
+  $("q-number").textContent = `其の${KANJI[current] || current + 1}`;
   $("q-text").textContent = q.text;
 
   // 選択肢の上下は毎回ランダム（上＝左寄り、という偏りを避ける）
