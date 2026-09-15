@@ -6,6 +6,7 @@ MBTI風に3文字のコード（例：`HDS`）が付き、結果はURLでシェ�
 - HTML5 / CSS3 / Vanilla JavaScript（ライブラリ・バックエンドなし）
 - 回答はどこにも送信・保存しない
 - ホスティング：Cloudflare Workers（静的配信）
+- **2026-09-15 から Ludom のトップには載せていない。`noindex` 付きで、URLを知っている人だけが開ける**（戻すときは `index.html` にカードを戻し、`noindex` を外す）
 
 ## 仕組み
 
