@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>テンきっぷ | 切符の4桁で10を作る60秒タイムアタック</title>
+<meta name="description" content="切符の4桁の数字を足して引いて掛けて割って10を作る、あの遊び。60秒で何問解ける？インストール不要、ブラウザですぐ遊べる計算パズル。">
+<meta property="og:title" content="テンきっぷ | 切符の4桁で10を作る">
+<meta property="og:description" content="4つの数字を全部使って10を作る。60秒で何問解ける？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">テン<span>きっぷ</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-ticket" aria-hidden="true">
+          <div class="mini-ticket">
+            <span class="mini-stripe"></span>
+            <span class="mini-digits">2 3 5 0</span>
+            <span class="mini-arrow">→ 10</span>
+          </div>
+        </div>
+        <h2 class="start-title">切符の4桁で、<br>10をつくれ。</h2>
+        <p class="start-lead">
+          4つの数字を<strong>全部使って</strong>、足す・引く・掛ける・割るで<strong>10</strong>にする。
+          電車を待つあいだの、あの遊び。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">数字 → 記号 → 数字 の順にタップすると、2つの数字が計算結果にまとまる</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">3回まとめて残った1つが <strong>10</strong> なら正解、次の切符へ</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">制限時間は <strong>60秒</strong>。解けない切符はパスできる（−5秒）</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 問</div>
+        <button id="btn-start" class="btn-primary">スタート</button>
+        <p class="start-note">出題は必ず解ける切符だけ。分数が必要な難問は出ません。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-time">
+          <div class="hud-label">残り時間</div>
+          <div class="hud-time-value"><span id="time-value">60</span><span class="hud-unit">秒</span></div>
+          <div class="time-bar"><div id="time-fill" class="time-fill"></div></div>
+          <div id="time-penalty" class="time-penalty" aria-live="polite"></div>
+        </div>
+        <div class="hud-score">
+          <div class="hud-label">正解</div>
+          <div class="hud-score-value"><span id="score-value">0</span><span class="hud-unit">問</span></div>
+        </div>
+      </div>
+
+      <div id="ticket" class="ticket">
+        <div class="ticket-stripe"></div>
+        <div class="ticket-body">
+          <div class="ticket-caption">
+            <span>きっぷ番号</span>
+            <span id="ticket-serial" class="ticket-serial">No. 0001</span>
+          </div>
+          <div id="tiles" class="tiles" aria-label="数字"></div>
+          <div class="ticket-target">この4つで <strong>10</strong> をつくる</div>
+        </div>
+        <div id="ticket-flash" class="ticket-flash" aria-hidden="true"></div>
+      </div>
+
+      <div id="msg" class="msg" aria-live="polite"></div>
+
+      <div class="ops" role="group" aria-label="記号">
+        <button class="op" data-op="+" aria-label="たす">＋</button>
+        <button class="op" data-op="−" aria-label="ひく">−</button>
+        <button class="op" data-op="×" aria-label="かける">×</button>
+        <button class="op" data-op="÷" aria-label="わる">÷</button>
+      </div>
+
+      <div class="play-actions">
+        <button id="btn-undo" class="btn-ghost">↩ 戻す</button>
+        <button id="btn-pass" class="btn-ghost btn-pass">パス <small>−5秒</small></button>
+      </div>
+      <p class="key-hint">キーボード：1〜4 で数字、+ − * / で記号、Backspace で戻す、P でパス</p>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">時間切れ！</div>
+        <div class="result-score"><span id="result-score">0</span><span class="result-unit">問</span></div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+
+        <ol id="result-list" class="result-list"></ol>
+
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="solver.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
