@@ -1,0 +1,455 @@
+/* ===================================================
+   トロ箱わたり - スタイルシート
+   夜明けの魚市場。深い青緑の水面に、白い発泡スチロールの箱。
+   のれんは藍色、猫は茶トラ、ボタンは市場のオレンジ。
+=================================================== */
+
+:root {
+  --bg-page: #10333d;
+  --bg-panel: #16414c;
+  --bg-panel-2: #1d4f5c;
+  --border: #2b6a78;
+  --water: #3aa7bf;
+  --water-deep: #2a8fa6;
+  --box: #f6f9fb;
+  --box-edge: #c9d6de;
+  --crack: #9aa5ad;
+  --shore: #b9c2c6;
+  --noren: #1c3f8c;
+  --orange: #ff8c42;
+  --orange-deep: #f26b1d;
+  --text-main: #eaf6f8;
+  --text-dim: #9dc3cb;
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at 50% -10%, #ff8c4222 0%, transparent 45%),
+    radial-gradient(circle at 100% 100%, #3aa7bf22 0%, transparent 45%),
+    var(--bg-page);
+  background-attachment: fixed;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+button {
+  font-family: inherit;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+#app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 12px 16px 28px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- ヘッダー ---------- */
+#page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0 14px;
+}
+.back {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  min-width: 70px;
+}
+.back:hover { color: var(--orange); }
+.header-spacer { min-width: 70px; }
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--orange), var(--orange-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.logo span {
+  color: var(--text-main);
+  -webkit-text-fill-color: var(--text-main);
+  font-weight: 400;
+  font-size: 1.1rem;
+  opacity: 0.85;
+}
+
+#page-main { flex: 1; }
+.screen.hidden { display: none; }
+.hidden { display: none !important; }
+
+/* ---------- 共通：カード・ボタン ---------- */
+.card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: 0 16px 48px #00000055;
+}
+
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.btn-primary {
+  background: linear-gradient(90deg, var(--orange), var(--orange-deep));
+  color: #2b1a0e;
+  box-shadow: 0 8px 24px #ff8c4244;
+}
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-main);
+  border-color: var(--border);
+}
+.btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+.btn-ghost:active { transform: scale(0.98); }
+.btn-ghost + .btn-ghost, .btn-primary + .btn-ghost { margin-top: 10px; }
+
+/* ---------- スタート画面 ---------- */
+.start-card { text-align: center; }
+.start-art { margin: 0 auto 16px; max-width: 300px; }
+.start-art svg { width: 100%; height: auto; display: block; border-radius: 16px; }
+.start-title {
+  font-size: 1.6rem;
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+.start-lead {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  margin-bottom: 18px;
+}
+.start-lead strong { color: var(--text-main); }
+
+.howto {
+  list-style: none;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+.howto li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--bg-panel-2);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.howto-num {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #2b1a0e;
+  font-weight: 800;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.howto-text { flex: 1; }
+.howto strong { color: var(--orange); }
+.start-note {
+  margin-top: 14px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+/* ---------- プレイ画面：HUD ---------- */
+.hud {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.hud-item {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px 12px;
+}
+.hud-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+.hud-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+/* ---------- 盤面 ---------- */
+.board-wrap { position: relative; }
+.board {
+  position: relative;
+  display: grid;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  touch-action: none;
+  background:
+    radial-gradient(ellipse at 20% 30%, #ffffff18 0%, transparent 35%),
+    radial-gradient(ellipse at 75% 70%, #ffffff12 0%, transparent 35%),
+    linear-gradient(180deg, var(--water), var(--water-deep));
+  box-shadow: inset 0 0 0 1px #ffffff22, 0 14px 40px #00000055;
+}
+.cell {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1;
+}
+/* 水面の揺らぎ */
+.cell.water::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 46%;
+  height: 8%;
+  border-radius: 999px;
+  background: #ffffff1c;
+}
+
+/* 発泡スチロールの箱 */
+.cell.box::before {
+  content: "";
+  position: absolute;
+  inset: 7%;
+  border-radius: 16%;
+  background: var(--box);
+  border: 2px solid var(--box-edge);
+  box-shadow: 0 4px 0 #b9c8d1, 0 8px 14px #00000033;
+  transition: transform 0.25s ease, opacity 0.25s ease, background 0.2s ease;
+}
+/* 蓋の線 */
+.cell.box::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 30%;
+  border-top: 2px solid #dfe7ec;
+  transition: opacity 0.25s ease;
+}
+.cell .crack {
+  position: absolute;
+  inset: 7%;
+  width: 86%;
+  height: 86%;
+  fill: none;
+  stroke: var(--crack);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+.cell.box.cracked .crack { opacity: 1; }
+.cell.box.cracked::before { background: #eef3f6; }
+.cell.box.broken::before {
+  transform: translateY(14%) scale(0.86) rotate(-6deg);
+  opacity: 0.35;
+  box-shadow: none;
+}
+.cell.box.broken::after { opacity: 0; }
+.cell.box.broken .crack { stroke: #5b6970; }
+/* 水しぶき */
+.cell.splash > .crack { animation: none; }
+.cell.splash::before { animation: none; }
+.cell.splash { overflow: visible; }
+.cell.splash .ring,
+.cell.splash::marker { display: none; }
+.cell.splash {
+  background: radial-gradient(circle, #ffffff66 0%, transparent 60%);
+  animation: splash 0.7s ease-out;
+}
+@keyframes splash {
+  0% { box-shadow: inset 0 0 0 0 #ffffff88; }
+  100% { box-shadow: inset 0 0 0 40px #ffffff00; }
+}
+
+/* 岸（入口） */
+.cell.shore {
+  background: linear-gradient(180deg, #c9d1d5, var(--shore));
+  box-shadow: inset 0 0 0 1px #ffffff44;
+}
+.cell.shore svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* のれん（出口） */
+.cell.gate { background: #10333d; }
+.cell.gate .noren { position: absolute; inset: 0; width: 100%; height: 100%; }
+.noren-bg { fill: #ffe9c9; }
+.fish { fill: #ff8c42; opacity: 0; transition: opacity 0.4s ease 0.3s; }
+.curtain rect { fill: var(--noren); transition: transform 0.5s ease; transform-origin: 50% 6%; }
+.curtain rect:nth-child(2) { transition-delay: 0.08s; }
+.curtain rect:nth-child(3) { transition-delay: 0.16s; }
+.cell.gate.open .curtain rect { transform: scaleY(0.12); }
+.cell.gate.open .fish { opacity: 1; }
+.cell.gate.open { animation: glow 1.2s ease-in-out infinite alternate; }
+@keyframes glow {
+  from { box-shadow: inset 0 0 0 2px #ff8c4266; }
+  to { box-shadow: inset 0 0 0 4px #ff8c42cc; }
+}
+.cell.gate.shake { animation: shake 0.35s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6%); }
+  75% { transform: translateX(6%); }
+}
+
+/* 猫 */
+.cat {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: left 0.16s ease, top 0.16s ease;
+  filter: drop-shadow(0 4px 4px #00000044);
+}
+.cat.instant { transition: none; }
+.cat svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform: scale(0.82);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+.cat.bump svg { animation: bump 0.22s ease; }
+@keyframes bump {
+  0%, 100% { transform: scale(0.82) translate(0, 0); }
+  50% { transform: scale(0.82) translate(var(--bx, 0), var(--by, 0)); }
+}
+.cat.fall svg {
+  transform: scale(0.3) rotate(25deg) translateY(40%);
+  opacity: 0;
+}
+.cat.happy svg { animation: happy 0.4s ease infinite alternate; }
+@keyframes happy {
+  from { transform: scale(0.82) translateY(0); }
+  to { transform: scale(0.9) translateY(-14%); }
+}
+
+/* ---------- オーバーレイ ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #10333dbb;
+  border-radius: 14px;
+  backdrop-filter: blur(2px);
+  animation: fade-in 0.25s ease;
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.overlay-card {
+  width: min(88%, 320px);
+  text-align: center;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 20px;
+  box-shadow: 0 16px 40px #00000066;
+}
+.ov-emoji { font-size: 2.2rem; line-height: 1; }
+.ov-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 8px 0 4px;
+}
+.ov-sub {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+  min-height: 1.4em;
+}
+
+/* ---------- 矢印ボタン ---------- */
+.dpad {
+  display: grid;
+  grid-template-columns: 56px 56px 56px;
+  grid-template-rows: 48px 48px;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.dpad-btn {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel-2);
+  color: var(--text-main);
+  font-size: 1rem;
+}
+.dpad-btn:active { background: var(--orange); color: #2b1a0e; }
+.dpad-btn.up { grid-column: 2; grid-row: 1; }
+.dpad-btn.left { grid-column: 1; grid-row: 2; }
+.dpad-btn.right { grid-column: 3; grid-row: 2; }
+.dpad-btn.down { grid-column: 2; grid-row: 2; }
+
+.play-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.play-hint {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+/* ---------- フッター ---------- */
+#page-footer {
+  text-align: center;
+  padding-top: 24px;
+  font-size: 0.8rem;
+}
+#page-footer a { color: var(--text-dim); text-decoration: none; }
+#page-footer a:hover { color: var(--orange); }
+
+@media (max-width: 380px) {
+  .hud { gap: 6px; }
+  .hud-item { padding: 5px 8px; }
+  .hud-value { font-size: 1rem; }
+  .card { padding: 22px 18px; }
+}

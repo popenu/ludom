@@ -254,6 +254,91 @@
         <span class="play-cta">▶ プレイ</span>
       </div>
     </a>
+    <!-- 線路つなぎ -->
+    <a class="card playable" href="rail-link/">
+      <div class="thumb">
+        <!-- 紙の路線図に、地図記号の線路タイル -->
+        <svg viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="200" height="125" fill="#f4f0e6"/>
+          <g fill="#fffdf8" stroke="#e5dfd0" stroke-width="1.5">
+            <rect x="40" y="6" width="36" height="36" rx="6"/><rect x="82" y="6" width="36" height="36" rx="6"/><rect x="124" y="6" width="36" height="36" rx="6"/>
+            <rect x="40" y="46" width="36" height="36" rx="6"/><rect x="82" y="46" width="36" height="36" rx="6"/><rect x="124" y="46" width="36" height="36" rx="6"/>
+            <rect x="40" y="86" width="36" height="36" rx="6"/><rect x="82" y="86" width="36" height="36" rx="6"/><rect x="124" y="86" width="36" height="36" rx="6"/>
+          </g>
+          <!-- つながっている線路（黒地に白破線） -->
+          <g fill="none" stroke="#2b2a28" stroke-width="7" stroke-linecap="round">
+            <path d="M58,24 H100 V104"/><path d="M100,64 H142"/>
+          </g>
+          <g fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="5 5">
+            <path d="M58,24 H100 V104"/><path d="M100,64 H142"/>
+          </g>
+          <!-- まだつながっていない線路（灰色） -->
+          <g fill="none" stroke="#cfc9bb" stroke-width="7" stroke-linecap="round">
+            <path d="M142,24 V42"/><path d="M58,64 V82"/><path d="M142,104 H124"/>
+          </g>
+          <g fill="none" stroke="#f4f0e6" stroke-width="3" stroke-dasharray="5 5">
+            <path d="M142,24 V42"/><path d="M58,64 V82"/><path d="M142,104 H124"/>
+          </g>
+          <!-- 車庫と駅 -->
+          <circle cx="100" cy="64" r="9" fill="#e0592a"/><circle cx="100" cy="64" r="3.5" fill="#fff"/>
+          <circle cx="58" cy="24" r="6" fill="#e0592a" stroke="#2b2a28" stroke-width="2.5"/>
+          <circle cx="142" cy="64" r="6" fill="#e0592a" stroke="#2b2a28" stroke-width="2.5"/>
+          <circle cx="100" cy="104" r="6" fill="#e0592a" stroke="#2b2a28" stroke-width="2.5"/>
+          <circle cx="142" cy="24" r="6" fill="#fff" stroke="#cfc9bb" stroke-width="2.5"/>
+          <circle cx="58" cy="64" r="6" fill="#fff" stroke="#cfc9bb" stroke-width="2.5"/>
+          <circle cx="142" cy="104" r="6" fill="#fff" stroke="#cfc9bb" stroke-width="2.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">線路つなぎ</div>
+        <div class="card-sub">タイルを回して、車庫から全部の駅へ線路をつなげ。盤面は毎回自動生成、路線が進むほど広くなる。何秒で開通できる？</div>
+        <div class="card-tags">
+          <span class="tag">回転パズル</span>
+          <span class="tag">タイムアタック</span>
+        </div>
+        <span class="play-cta">▶ プレイ</span>
+      </div>
+    </a>
+
+    <!-- トロ箱わたり -->
+    <a class="card playable" href="torobako/">
+      <div class="thumb">
+        <!-- 水面に浮かぶ発泡スチロールの箱と、茶トラの猫 -->
+        <svg viewBox="0 0 200 125" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="200" height="125" fill="#3aa7bf"/>
+          <ellipse cx="40" cy="100" rx="14" ry="2.5" fill="#ffffff33"/><ellipse cx="160" cy="20" rx="14" ry="2.5" fill="#ffffff33"/>
+          <g fill="#f6f9fb" stroke="#c9d6de" stroke-width="2">
+            <rect x="22" y="22" width="40" height="40" rx="6"/><rect x="68" y="22" width="40" height="40" rx="6"/>
+            <rect x="68" y="68" width="40" height="40" rx="6"/><rect x="114" y="68" width="40" height="40" rx="6"/>
+          </g>
+          <!-- ヒビ -->
+          <g fill="none" stroke="#9aa5ad" stroke-width="2" stroke-linejoin="round">
+            <path d="M30,28 L44,42 L38,54 L52,60"/><path d="M44,42 L58,36"/>
+            <path d="M76,74 L88,86 L82,98 L96,104"/><path d="M88,86 L102,80"/>
+          </g>
+          <!-- のれん -->
+          <rect x="160" y="64" width="34" height="48" rx="5" fill="#1c3f8c"/>
+          <path d="M168,70 V96 M177,70 V96 M186,70 V96" stroke="#ffffff55" stroke-width="2"/>
+          <!-- 猫 -->
+          <g transform="translate(88,42)">
+            <path d="M-11,-8 L-7,-18 L-1,-10 Z M11,-8 L7,-18 L1,-10 Z" fill="#f2a65a"/>
+            <circle r="12" fill="#f2a65a"/>
+            <path d="M-4,-10 L-2,-4 M4,-10 L2,-4" stroke="#d4823a" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="-4" cy="-1" r="1.7" fill="#2b2a28"/><circle cx="4" cy="-1" r="1.7" fill="#2b2a28"/>
+            <path d="M-1.5,3 L0,4.5 L1.5,3 Z" fill="#e58b8b"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">トロ箱わたり</div>
+        <div class="card-sub">発泡スチロールの箱は、一度踏むとヒビ、二度踏むと割れて落ちる。全部の箱を一度ずつ踏んで、のれんの奥の魚へ。</div>
+        <div class="card-tags">
+          <span class="tag">一筆書きパズル</span>
+          <span class="tag">ステージ制</span>
+        </div>
+        <span class="play-cta">▶ プレイ</span>
+      </div>
+    </a>
 
   </div>
 

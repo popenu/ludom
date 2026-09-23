@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>トロ箱わたり | 発泡スチロールの箱を一度ずつ踏んで渡るパズル</title>
+<meta name="description" content="魚市場の猫になって、水に浮かぶ発泡スチロールのトロ箱を渡る。一度踏むとヒビ、二度踏むと割れて落ちる。全部の箱を一度ずつ踏んで、のれんの奥の魚へ。面は自動生成、インストール不要。">
+<meta property="og:title" content="トロ箱わたり | 全部の箱を一度ずつ踏んで渡れ">
+<meta property="og:description" content="発泡スチロールの箱は二度踏むと割れる。全部踏んで、のれんの奥の魚へ。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">トロ箱<span>わたり</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 300 110">
+            <rect x="0" y="0" width="300" height="110" rx="16" fill="#3aa7bf"/>
+            <g fill="#f6f9fb" stroke="#c9d6de" stroke-width="3">
+              <rect x="18" y="22" width="60" height="60" rx="8"/>
+              <rect x="90" y="22" width="60" height="60" rx="8"/>
+              <rect x="162" y="22" width="60" height="60" rx="8"/>
+            </g>
+            <path d="M104,30 L120,50 L112,66 L130,78" fill="none" stroke="#9aa5ad" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M120,50 L136,44" fill="none" stroke="#9aa5ad" stroke-width="3"/>
+            <rect x="234" y="16" width="52" height="72" rx="8" fill="#1c3f8c"/>
+            <path d="M246,26 V60 M260,26 V60 M274,26 V60" stroke="#ffffff55" stroke-width="3"/>
+            <path d="M252,74 Q260,66 268,74 Q260,82 252,74 Z" fill="#fff"/>
+            <g transform="translate(48,52)">
+              <path d="M-16,-12 L-10,-26 L-2,-14 Z M16,-12 L10,-26 L2,-14 Z" fill="#f2a65a"/>
+              <circle r="18" fill="#f2a65a"/>
+              <path d="M-6,-16 L-3,-6 M6,-16 L3,-6" stroke="#d4823a" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="-6" cy="-1" r="2.4" fill="#2b2a28"/><circle cx="6" cy="-1" r="2.4" fill="#2b2a28"/>
+              <path d="M-2,5 L0,7 L2,5 Z" fill="#e58b8b"/>
+              <path d="M-22,3 H-9 M-22,8 H-9 M9,3 H22 M9,8 H22" stroke="#2b2a2888" stroke-width="1.5"/>
+            </g>
+          </svg>
+        </div>
+        <h2 class="start-title">二度踏むと、割れる。</h2>
+        <p class="start-lead">
+          魚市場の猫になって、水に浮かぶ<strong>発泡スチロールのトロ箱</strong>を渡る。一度踏むとヒビ、二度踏むと割れて落ちる。
+          <strong>全部の箱を一度ずつ踏んで</strong>、のれんの奥の魚へ。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">スワイプ、または となりの箱をタップで移動</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">踏んだ箱にはヒビが入る。<strong>もう一度踏むと割れて水に落ちる</strong></span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">全部の箱を踏むと、のれんが開く。行き止まりになったらやり直し</span></li>
+        </ul>
+        <button id="btn-start" class="btn-primary">第1面から</button>
+        <button id="btn-continue" class="btn-ghost hidden">続きから（第<span id="continue-stage">1</span>面）</button>
+        <p class="start-note">面は毎回自動生成。必ず渡り切れる並びだけ出ます。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">面</div><div class="hud-value">第<span id="stage-value">1</span></div></div>
+        <div class="hud-item"><div class="hud-label">残りの箱</div><div class="hud-value"><span id="remain-value">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">手数</div><div class="hud-value"><span id="moves-value">0</span></div></div>
+      </div>
+
+      <div class="board-wrap">
+        <div id="board" class="board" aria-label="トロ箱の盤面">
+          <div id="cat" class="cat" aria-label="猫">
+            <svg viewBox="0 0 100 100">
+              <path d="M22,44 L30,14 L46,34 Z M78,44 L70,14 L54,34 Z" fill="#f2a65a" stroke="#d4823a" stroke-width="3" stroke-linejoin="round"/>
+              <circle cx="50" cy="56" r="32" fill="#f2a65a"/>
+              <path d="M40,30 L44,44 M50,28 L50,42 M60,30 L56,44" stroke="#d4823a" stroke-width="5" stroke-linecap="round"/>
+              <ellipse cx="50" cy="66" rx="14" ry="10" fill="#fff3e6"/>
+              <circle cx="39" cy="54" r="4.5" fill="#2b2a28"/><circle cx="61" cy="54" r="4.5" fill="#2b2a28"/>
+              <path d="M46,62 L50,66 L54,62 Z" fill="#e58b8b"/>
+              <path d="M14,60 H32 M14,68 H32 M68,60 H86 M68,68 H86" stroke="#2b2a2899" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div id="overlay" class="overlay hidden">
+          <div class="overlay-card">
+            <div id="ov-emoji" class="ov-emoji">🐟</div>
+            <div id="ov-title" class="ov-title">ごちそう！</div>
+            <div id="ov-sub" class="ov-sub"></div>
+            <button id="btn-ov" class="btn-primary">次の面へ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dpad" aria-label="移動">
+        <button class="dpad-btn up" data-dx="0" data-dy="-1" aria-label="上へ">▲</button>
+        <button class="dpad-btn left" data-dx="-1" data-dy="0" aria-label="左へ">◀</button>
+        <button class="dpad-btn right" data-dx="1" data-dy="0" aria-label="右へ">▶</button>
+        <button class="dpad-btn down" data-dx="0" data-dy="1" aria-label="下へ">▼</button>
+      </div>
+
+      <div class="play-actions">
+        <button id="btn-retry" class="btn-ghost">↺ やり直す</button>
+        <button id="btn-home" class="btn-ghost">🏠 最初に戻る</button>
+      </div>
+      <p class="play-hint">スワイプ／となりの箱をタップ／矢印ボタン。キーボードは矢印キー。</p>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

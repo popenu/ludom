@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>線路つなぎ | タイルを回して全駅を開通させる路線パズル</title>
+<meta name="description" content="バラバラになった線路タイルをタップで回転させ、車庫から全部の駅へ線路をつなぐパズル。盤面は毎回自動生成。インストール不要、ブラウザですぐ遊べる。">
+<meta property="og:title" content="線路つなぎ | 全駅開通を目指す路線パズル">
+<meta property="og:description" content="タイルを回して、車庫から全部の駅へ線路をつなげ。何秒で開通できる？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">線路<span>つなぎ</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 300 100">
+            <g class="art-rail">
+              <path d="M0,50 H90 Q110,50 110,30 V10" fill="none" stroke="#2b2a28" stroke-width="12" stroke-linecap="round"/>
+              <path d="M0,50 H90 Q110,50 110,30 V10" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="9 9"/>
+              <path d="M110,50 H300" fill="none" stroke="#c9c3b5" stroke-width="12" stroke-linecap="round"/>
+              <path d="M110,50 H300" fill="none" stroke="#f4f0e6" stroke-width="5" stroke-dasharray="9 9"/>
+              <path d="M190,50 V95" fill="none" stroke="#c9c3b5" stroke-width="12" stroke-linecap="round"/>
+              <path d="M190,50 V95" fill="none" stroke="#f4f0e6" stroke-width="5" stroke-dasharray="9 9"/>
+            </g>
+            <circle cx="110" cy="50" r="17" fill="#e0592a"/><circle cx="110" cy="50" r="7" fill="#fff"/>
+            <circle cx="260" cy="50" r="13" fill="#fff" stroke="#c9c3b5" stroke-width="5"/>
+            <circle cx="30" cy="50" r="13" fill="#fff" stroke="#2b2a28" stroke-width="5"/>
+          </svg>
+        </div>
+        <h2 class="start-title">タイルを回して、<br>全駅開通。</h2>
+        <p class="start-lead">
+          バラバラになった線路のタイルをタップで回転させ、<strong>車庫</strong>から<strong>すべての駅</strong>へ線路をつなぐパズル。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">タイルをタップすると右に90°回る（右クリックで左回り）</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">車庫とつながった線路は黒く、つながった駅は<strong>色がつく</strong></span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">全タイルがつながれば開通。路線が進むほど盤面が大きくなる</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">
+          <div class="start-best-label">自己ベスト（サイズ別）</div>
+          <div id="start-best-list" class="start-best-list"></div>
+        </div>
+        <button id="btn-start" class="btn-primary">スタート</button>
+        <p class="start-note">盤面は毎回自動生成。必ずひとつながりに戻せます。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">路線</div><div class="hud-value">第<span id="stage-value">1</span></div></div>
+        <div class="hud-item"><div class="hud-label">盤面</div><div class="hud-value"><span id="size-value">4×4</span></div></div>
+        <div class="hud-item"><div class="hud-label">手数</div><div class="hud-value"><span id="moves-value">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">時間</div><div class="hud-value mono"><span id="time-value">0.0</span><span class="hud-unit">秒</span></div></div>
+      </div>
+
+      <div class="board-wrap">
+        <div id="board" class="board" aria-label="線路の盤面"></div>
+        <div id="clear" class="clear-overlay hidden">
+          <div class="clear-card">
+            <div class="clear-kicker">全駅開通！</div>
+            <div class="clear-stats"><span id="clear-time">0.0秒</span><span class="sep">・</span><span id="clear-moves">0手</span></div>
+            <div id="clear-best" class="clear-best"></div>
+            <button id="btn-next" class="btn-primary">次の路線へ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="play-actions">
+        <button id="btn-regen" class="btn-ghost">🔀 別の盤面</button>
+        <button id="btn-home" class="btn-ghost">🏠 最初に戻る</button>
+      </div>
+      <p class="play-hint">つながった駅は色がつく。全部つながれば開通。</p>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
