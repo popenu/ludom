@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>回転寿司カウント | 流れる皿を覚える観察・記憶ゲーム</title>
+<meta name="description" content="回転寿司のレーンを流れる皿をよく見て、止まったら質問に答える。サーモンは何皿通った？3番目は？合計いくら？速度と種類が増えて難しくなる観察・記憶ゲーム。インストール不要。">
+<meta property="og:title" content="回転寿司カウント | 流れる皿、何皿通った？">
+<meta property="og:description" content="レーンを流れる皿をよく見て、止まったら質問に答える観察・記憶ゲーム。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">回転寿司<span>カウント</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" id="start-art" aria-hidden="true"></div>
+        <h2 class="start-title">皿を見て、<br>数えろ。</h2>
+        <p class="start-lead">
+          レーンを流れる寿司をよく見て、止まったら質問に答える。<strong>何皿通った？ 3番目は？ 合計いくら？</strong>
+          速くなり、種類も増える。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">皿が右から左へ流れる。よく見て覚える</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">止まったら質問。<strong>4択</strong>から8秒以内に選ぶ</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">3回まちがえたら閉店。何問正解できる？</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 問</div>
+        <button id="btn-start" class="btn-primary">開店</button>
+        <p class="start-note">最初の3問は、聞かれることが先に出ます。4問目からは止まってからのお楽しみ。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問</div><div class="hud-value">第<span id="round-value">1</span></div></div>
+        <div class="hud-item"><div class="hud-label">正解</div><div class="hud-value accent"><span id="score-value">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">湯呑み</div><div class="hud-value" id="lives-value">🍵🍵🍵</div></div>
+      </div>
+
+      <div id="banner" class="banner">流れる皿を覚えて…</div>
+
+      <div class="counter">
+        <div id="lane" class="lane" aria-label="回転レーン"></div>
+        <div class="counter-edge"></div>
+      </div>
+
+      <div id="qbox" class="qbox hidden">
+        <div id="q-text" class="q-text"></div>
+        <div id="legend" class="legend hidden"></div>
+        <div class="timer-bar"><div id="timer-fill" class="timer-fill"></div></div>
+        <div id="choices" class="choices"></div>
+        <div id="feedback" class="feedback"></div>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">閉店！</div>
+        <div class="result-score"><span id="result-score">0</span><span class="result-unit">問正解</span></div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <ol id="result-list" class="result-list"></ol>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

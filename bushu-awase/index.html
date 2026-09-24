@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>部首あわせ | 部品をくっつけて漢字を作る60秒タイムアタック</title>
+<meta name="description" content="「日」と「月」で「明」。6つの部品から2つを選んでくっつけ、漢字を作る60秒タイムアタック。読みも一緒に覚えられる。インストール不要、ブラウザですぐ遊べる。">
+<meta property="og:title" content="部首あわせ | 部品をくっつけて漢字を作れ">
+<meta property="og:description" content="日＋月＝明。6つの部品から漢字を3つ作る。60秒で何字できる？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">部首<span>あわせ</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <span class="art-tile">日</span><span class="art-plus">＋</span><span class="art-tile">月</span><span class="art-eq">＝</span><span class="art-kanji">明</span>
+        </div>
+        <h2 class="start-title">くっつけて、<br>漢字をつくれ。</h2>
+        <p class="start-lead">
+          6つの部品から2つを選んでくっつけると漢字になる。<strong>1セットに漢字は3つ</strong>。
+          できた漢字の読みも出るので、遊びながら覚えられる。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">部品を2つタップ。順番はどちらからでもOK</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">漢字になれば <strong>+1</strong>。3つ作ると次のセットへ</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">制限時間は <strong>60秒</strong>。分からないセットはパスできる（−5秒）</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 字</div>
+        <button id="btn-start" class="btn-primary">スタート</button>
+        <p class="start-note">収録は約700字。同じ部品の組み合わせが別の漢字になるものは入っていません。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-time">
+          <div class="hud-label">残り時間</div>
+          <div class="hud-time-value"><span id="time-value">60</span><span class="hud-unit">秒</span></div>
+          <div class="time-bar"><div id="time-fill" class="time-fill"></div></div>
+          <div id="time-penalty" class="time-penalty" aria-live="polite"></div>
+        </div>
+        <div class="hud-score">
+          <div class="hud-label">できた漢字</div>
+          <div class="hud-score-value"><span id="score-value">0</span><span class="hud-unit">字</span></div>
+        </div>
+      </div>
+
+      <div id="made" class="made">
+        <div id="made-kanji" class="made-kanji">？</div>
+        <div id="made-reading" class="made-reading">部品を2つ選ぼう</div>
+      </div>
+
+      <div id="tiles" class="tiles" aria-label="部品"></div>
+
+      <div id="msg" class="msg" aria-live="polite"></div>
+
+      <div class="play-actions">
+        <button id="btn-pass" class="btn-ghost btn-pass">パス <small>−5秒</small></button>
+      </div>
+      <p class="key-hint">キーボード：1〜6 で部品、P でパス</p>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">時間切れ！</div>
+        <div class="result-score"><span id="result-score">0</span><span class="result-unit">字</span></div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <div id="result-list" class="result-list"></div>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
