@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>正直村と嘘つき村 | 発言から嘘つきを当てる論理パズル</title>
+<meta name="description" content="正直者はいつも本当のことを言い、嘘つきはいつも嘘をつく。村人の発言から、誰が嘘つきかを当てる論理パズル。問題はプログラムが生成し、答えが一つに決まるものだけ出題。全10問。インストール不要。">
+<meta property="og:title" content="正直村と嘘つき村 | 誰が嘘つき？">
+<meta property="og:description" content="村人の発言から嘘つきを当てる論理パズル。全10問、何問解ける？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">正直村と<span>嘘つき村</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div id="start-art" class="start-art" aria-hidden="true"></div>
+        <h2 class="start-title">誰が、<br>嘘つき？</h2>
+        <p class="start-lead">
+          <strong>正直者</strong>はいつも本当のことを言い、<strong>嘘つき</strong>はいつも嘘をつく。
+          村人の発言から、全員の正体を当てる。全10問。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">村人をタップして「正直者」「嘘つき」を決める</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">全員決めたら「答え合わせ」。矛盾がなければ正解</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">3人から始まり、5人まで増える。答えは必ず一つに決まる</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> / 10</div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <p class="start-note">コツ：「Aは嘘つきだ」と言う人が嘘つきなら、Aは正直者。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問</div><div class="hud-value"><span id="q-value">1</span> / 10</div></div>
+        <div class="hud-item"><div class="hud-label">正解</div><div class="hud-value accent"><span id="score-value">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">時間</div><div class="hud-value mono"><span id="time-value">0</span><span class="hud-unit">秒</span></div></div>
+      </div>
+
+      <p class="rule">正直者はいつも本当のことを言い、嘘つきはいつも嘘をつく。</p>
+
+      <div id="villagers" class="villagers"></div>
+
+      <div id="verdict" class="verdict hidden">
+        <div id="verdict-title" class="verdict-title"></div>
+        <ul id="verdict-list" class="verdict-list"></ul>
+      </div>
+
+      <div class="play-actions">
+        <button id="btn-check" class="btn-primary" disabled>答え合わせ</button>
+        <button id="btn-next" class="btn-primary hidden">次の問題へ</button>
+      </div>
+      <p class="play-hint">タップで ？ → 正直者 → 嘘つき と切り替わる</p>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">結果</div>
+        <div class="result-score"><span id="result-score">0</span><span class="result-unit">/ 10</span></div>
+        <div id="result-rank" class="result-rank"></div>
+        <div class="result-time">かかった時間 <span id="result-time" class="mono">0</span> 秒</div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

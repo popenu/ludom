@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>絶対音感テスト | 鳴った音はドレミのどれ？</title>
+<meta name="description" content="音が鳴ったら、鍵盤で答える。全10問で音感を判定。絶対音感モードと、「ド」を先に聞ける相対音感モード。音は合成なので楽器いらず。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="絶対音感テスト | 鳴った音はドレミのどれ？">
+<meta property="og:description" content="鍵盤で答える全10問。あなたの音感は調律師？ 鼻歌名人？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">絶対音感<span>テスト</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 300 110">
+            <rect x="0" y="0" width="300" height="110" rx="14" fill="#1a1a2e"/>
+            <g>
+              <rect x="10" y="10" width="38" height="90" rx="4" fill="#fdfcf7"/><rect x="50" y="10" width="38" height="90" rx="4" fill="#fdfcf7"/><rect x="90" y="10" width="38" height="90" rx="4" fill="#fdfcf7"/><rect x="130" y="10" width="38" height="90" rx="4" fill="#fdfcf7"/><rect x="170" y="10" width="38" height="90" rx="4" fill="#fdfcf7"/><rect x="210" y="10" width="38" height="90" rx="4" fill="#ffd166"/><rect x="250" y="10" width="38" height="90" rx="4" fill="#fdfcf7"/>
+              <rect x="36" y="10" width="24" height="56" rx="3" fill="#1a1a2e"/><rect x="76" y="10" width="24" height="56" rx="3" fill="#1a1a2e"/><rect x="156" y="10" width="24" height="56" rx="3" fill="#1a1a2e"/><rect x="196" y="10" width="24" height="56" rx="3" fill="#1a1a2e"/><rect x="236" y="10" width="24" height="56" rx="3" fill="#1a1a2e"/>
+            </g>
+            <text x="229" y="92" text-anchor="middle" font-family="Hiragino Kaku Gothic ProN, sans-serif" font-size="13" font-weight="800" fill="#1a1a2e">ラ</text>
+            <g fill="none" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"><path d="M262,40 q10,-6 0,-14"/><path d="M270,46 q18,-13 0,-28"/></g>
+          </svg>
+        </div>
+        <h2 class="start-title">鳴った音は、<br>ドレミのどれ？</h2>
+        <p class="start-lead">
+          音が鳴ったら鍵盤で答える。<strong>全10問</strong>。前半は白い鍵盤だけ、後半は黒い鍵盤も出る。
+          正解数で音感の称号が決まる。
+        </p>
+        <div class="mode-pick" role="group" aria-label="モード">
+          <button class="mode active" data-mode="abs">
+            <span class="mode-name">絶対音感</span>
+            <span class="mode-desc">いきなり1音。頼れるのは記憶だけ</span>
+          </button>
+          <button class="mode" data-mode="rel">
+            <span class="mode-name">相対音感</span>
+            <span class="mode-desc">先に「ド」が鳴る。差で当てる</span>
+          </button>
+        </div>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> / 10</div>
+        <button id="btn-start" class="btn-primary">🔊 音を出してはじめる</button>
+        <p class="start-note">音が出ます。マナーモードではイヤホンでどうぞ。楽器の音はブラウザで合成しています。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問</div><div class="hud-value"><span id="q-value">1</span> / 10</div></div>
+        <div class="hud-item"><div class="hud-label">正解</div><div class="hud-value accent"><span id="score-value">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">モード</div><div class="hud-value small" id="mode-value">絶対音感</div></div>
+      </div>
+
+      <div class="stage">
+        <div id="note-orb" class="note-orb"><span id="orb-text">♪</span></div>
+        <div id="prompt" class="prompt">音を聞いて、鍵盤で答えよう</div>
+        <button id="btn-replay" class="btn-ghost btn-replay">🔁 もう一度聞く</button>
+      </div>
+
+      <div id="keyboard" class="keyboard" aria-label="鍵盤"></div>
+      <div id="feedback" class="feedback"></div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">あなたの音感は</div>
+        <div id="result-rank" class="result-rank">鼻歌名人</div>
+        <div class="result-score"><span id="result-score">0</span><span class="result-unit">/ 10</span></div>
+        <div id="result-sub" class="result-sub"></div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <div id="result-list" class="result-list"></div>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+          <button id="btn-home" class="btn-ghost">モードを変える</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

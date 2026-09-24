@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>一筆書き | 指でなぞって全部の線を一度ずつ通る</title>
+<meta name="description" content="図形を指でなぞって、全部の線を一度ずつ通る一筆書きパズル。図形はプログラムが生成し、必ず書ける形だけ出題。全10問のタイムアタック。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="一筆書き | これ、一筆で書ける？">
+<meta property="og:description" content="指でなぞって全部の線を一度ずつ。全10問、何秒で書ける？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">一筆<span>書き</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 200 130">
+            <g fill="none" stroke="#1c1a17" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M40,110 L40,50 L100,15 L160,50 L160,110 Z"/>
+              <path d="M40,50 L160,110 M160,50 L40,110"/>
+            </g>
+            <g fill="#c9402a"><circle cx="40" cy="110" r="8"/><circle cx="160" cy="110" r="8"/></g>
+            <g fill="#1c1a17"><circle cx="40" cy="50" r="6"/><circle cx="160" cy="50" r="6"/><circle cx="100" cy="15" r="6"/></g>
+          </svg>
+        </div>
+        <h2 class="start-title">これ、<br>一筆で書ける？</h2>
+        <p class="start-lead">
+          指でなぞって、<strong>全部の線を一度ずつ</strong>通る。同じ線は二度通れない。指を離したらやり直し。
+          全10問のタイムアタック。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">点から指を置いて、線に沿ってなぞる</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">全部の線が赤くなったらクリア。次の図形へ</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">行き止まりや指を離すとミス。2回ミスするとヒントが出る</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 秒</div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <p class="start-note">コツ：線が奇数本集まる点があれば、そこから始めてもう一方で終わる。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問</div><div class="hud-value"><span id="q-value">1</span> / 10</div></div>
+        <div class="hud-item"><div class="hud-label">線</div><div class="hud-value"><span id="edge-value">0</span> / <span id="edge-total">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">ミス</div><div class="hud-value"><span id="miss-value">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">時間</div><div class="hud-value mono"><span id="time-value">0</span><span class="hud-unit">秒</span></div></div>
+      </div>
+
+      <div class="paper">
+        <canvas id="board" aria-label="一筆書きの図形"></canvas>
+        <div id="msg" class="msg"></div>
+      </div>
+
+      <div class="play-actions">
+        <button id="btn-hint" class="btn-ghost">💡 ヒント</button>
+        <button id="btn-skip" class="btn-ghost">⏭ 別の図形 <small>+10秒</small></button>
+      </div>
+      <p class="play-hint">点に指を置いて、離さずになぞる</p>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">10問クリア！</div>
+        <div class="result-time"><span id="result-time">0</span><span class="result-unit">秒</span></div>
+        <div id="result-rank" class="result-rank"></div>
+        <div id="result-sub" class="result-sub"></div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
