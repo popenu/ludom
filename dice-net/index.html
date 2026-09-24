@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>サイコロ展開図 | 組み立てるとどうなる？ 空間パズル</title>
+<meta name="description" content="展開図を見て「反対側の面は？」「組み立てるとどれ？」に答える空間パズル。11種類の展開図を回転・反転してプログラムが無限に出題。全10問、何問正解できる？ インストール不要。">
+<meta property="og:title" content="サイコロ展開図 | 組み立てると、どれ？">
+<meta property="og:description" content="展開図から立方体を頭の中で組み立てる空間パズル。10問で何問正解できる？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">サイコロ<span>展開図</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div id="start-art" class="start-art" aria-hidden="true"></div>
+        <h2 class="start-title">組み立てると、<br>どうなる？</h2>
+        <p class="start-lead">
+          展開図を見て、頭の中で立方体に折る。「<strong>反対側の面は？</strong>」「<strong>組み立てるとどれ？</strong>」の2種類、全10問。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">前半は「反対側の面は？」。向かい合う面を答える</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">後半は「組み立てるとどれ？」。<strong>鏡写し</strong>のニセモノに注意</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">制限時間なし。10問の正解数とかかった時間が記録</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> / 10</div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <p class="start-note">展開図は11種類すべてを、回転・反転してランダムに出題します。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問</div><div class="hud-value"><span id="q-value">1</span> / 10</div></div>
+        <div class="hud-item"><div class="hud-label">正解</div><div class="hud-value accent"><span id="score-value">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">時間</div><div class="hud-value mono"><span id="time-value">0</span><span class="hud-unit">秒</span></div></div>
+      </div>
+
+      <div class="qbox">
+        <div id="net" class="net" aria-label="展開図"></div>
+        <div id="q-text" class="q-text"></div>
+        <div id="choices" class="choices"></div>
+        <div id="feedback" class="feedback"></div>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">結果</div>
+        <div class="result-score"><span id="result-score">0</span><span class="result-unit">/ 10</span></div>
+        <div id="result-rank" class="result-rank"></div>
+        <div class="result-time">かかった時間 <span id="result-time" class="mono">0</span> 秒</div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

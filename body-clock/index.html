@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>体内時計 | 10秒ぴったりで止められる？ 感覚ゲーム</title>
+<meta name="description" content="画面が消えたあと、3秒・10秒・30秒ぴったりで止める感覚ゲーム。ズレの合計で称号が決まる。あなたの体内時計は原子時計？ それとも日時計？ インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="体内時計 | 10秒ぴったりで止められる？">
+<meta property="og:description" content="3秒・10秒・30秒。画面が消えたあと、ぴったりで止めろ。ズレの合計で称号が決まる。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">体内<span>時計</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="#f5f2e8" stroke="#2b2a28" stroke-width="4"/>
+            <g stroke="#2b2a28" stroke-width="3" stroke-linecap="round">
+              <line x1="60" y1="12" x2="60" y2="20"/><line x1="108" y1="60" x2="100" y2="60"/><line x1="60" y1="108" x2="60" y2="100"/><line x1="12" y1="60" x2="20" y2="60"/>
+            </g>
+            <text x="60" y="66" text-anchor="middle" font-family="Menlo, monospace" font-size="22" font-weight="800" fill="#2b2a28">？</text>
+            <line x1="60" y1="60" x2="60" y2="22" stroke="#e04a3a" stroke-width="3" stroke-linecap="round" transform="rotate(60 60 60)"/>
+            <circle cx="60" cy="60" r="4" fill="#e04a3a"/>
+          </svg>
+        </div>
+        <h2 class="start-title">10秒ぴったりで、<br>止められる？</h2>
+        <p class="start-lead">
+          スタートすると数字が動き、すぐに<strong>消える</strong>。あとは体内時計だけを頼りに、ぴったりで止める。
+          <strong>3秒・10秒・30秒</strong>の3ラウンド。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">時計をタップでスタート。最初の数秒だけ数字が見える</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">消えたら、目標の秒数だと思ったところでもう一度タップ</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">3ラウンドの<strong>ズレの合計</strong>で称号が決まる</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト ズレ合計 <strong id="start-best-value">0.00</strong> 秒</div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <p class="start-note">秒針も数字も途中で消えます。心の中で数えるのはアリ。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">ラウンド</div><div class="hud-value"><span id="round-value">1</span> / 3</div></div>
+        <div class="hud-item"><div class="hud-label">目標</div><div class="hud-value accent"><span id="target-value">3</span><span class="hud-unit">秒</span></div></div>
+        <div class="hud-item"><div class="hud-label">ズレ合計</div><div class="hud-value mono"><span id="total-value">0.00</span></div></div>
+      </div>
+
+      <button id="clock" class="clock" aria-label="時計。タップでスタート、もう一度タップで停止">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="92" class="face"/>
+          <g id="ticks" class="ticks"></g>
+          <line id="hand" class="hand" x1="100" y1="100" x2="100" y2="26"/>
+          <circle cx="100" cy="100" r="5" class="pin"/>
+        </svg>
+        <div id="clock-text" class="clock-text">タップで<br>スタート</div>
+      </button>
+
+      <div id="round-msg" class="round-msg"></div>
+
+      <ol id="round-list" class="round-list"></ol>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">あなたの体内時計は</div>
+        <div id="result-rank" class="result-rank">人間時計</div>
+        <div class="result-total">ズレ合計 <span id="result-total" class="mono">0.00</span> 秒</div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <ol id="result-list" class="result-list"></ol>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
