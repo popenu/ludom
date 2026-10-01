@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>いろまぜ | 絵の具を混ぜて、お題の色を作れる？ 調色ゲーム</title>
+<meta name="description" content="赤・黄・青・白・黒の絵の具をパレット10マスに乗せて、一発勝負で混ぜる。お題の伝統色にどこまで近づける？ 全5問、500点満点。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="いろまぜ | 絵の具を混ぜて、お題の色を作れる？">
+<meta property="og:description" content="赤・黄・青・白・黒をパレット10マスに乗せて、一発勝負で混ぜる。お題の伝統色にどこまで近づける？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">いろ<span>まぜ</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 160 110">
+            <path d="M80 8c40 0 72 18 72 44 0 18-16 22-28 20-10-2-16 6-12 16 4 10-8 16-32 16C40 104 8 84 8 54 8 26 40 8 80 8z" fill="#fbf8f1" stroke="#3a3530" stroke-width="3"/>
+            <circle cx="122" cy="80" r="8" fill="#f3efe6" stroke="#3a3530" stroke-width="2.5"/>
+            <circle cx="42" cy="40" r="10" fill="#dc3661"/>
+            <circle cx="70" cy="28" r="10" fill="#fbe800"/>
+            <circle cx="100" cy="32" r="10" fill="#035dcd"/>
+            <circle cx="34" cy="68" r="10" fill="#f6f6f6" stroke="#d8d2c6" stroke-width="1.5"/>
+            <circle cx="62" cy="80" r="10" fill="#2c2c2c"/>
+            <circle cx="92" cy="62" r="13" fill="#4f9a5a"/>
+          </svg>
+        </div>
+        <h2 class="start-title">絵の具を混ぜて、<br>この色、作れる？</h2>
+        <p class="start-lead">
+          お題の色に近づくように、<strong>赤・黄・青・白・黒</strong>の絵の具をパレットに乗せて混ぜる。
+          混ぜられるのは<strong>1問1回</strong>だけ。全5問。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">絵の具を押すたびに、パレットに1マスずつ乗る（最大10マス）</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">配分が決まったら「まぜる」。マスをタップすると取り除ける</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">お題との近さで1問100点。<strong>500点満点</strong>で称号が決まる</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 点</div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <p class="start-note">お題は必ず10マス以内でぴったり作れる。比率が同じなら量は問わない。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問題</div><div class="hud-value"><span id="q-value">1</span> / 5</div></div>
+        <div class="hud-item"><div class="hud-label">合計</div><div class="hud-value"><span id="total-value">0</span><span class="hud-unit">点</span></div></div>
+      </div>
+
+      <div class="compare">
+        <div class="swatch-box">
+          <div class="swatch-label">お題</div>
+          <div id="target-swatch" class="swatch"></div>
+          <div id="target-name" class="swatch-name">若竹色</div>
+          <div id="target-yomi" class="swatch-yomi">わかたけいろ</div>
+        </div>
+        <div class="swatch-box">
+          <div class="swatch-label">あなた</div>
+          <div class="swatch empty"><canvas id="bowl"></canvas></div>
+          <div id="mine-name" class="swatch-name">？</div>
+          <div id="mine-yomi" class="swatch-yomi">まぜると出る</div>
+        </div>
+      </div>
+
+      <div class="palette-wrap">
+        <div class="palette-head"><span>パレット</span><span id="slot-count" class="mono">0 / 10</span></div>
+        <div id="palette" class="palette"></div>
+      </div>
+
+      <div id="controls">
+        <div class="paints">
+          <button class="paint" data-k="R" type="button"><span class="paint-dot"></span>赤<span id="count-R" class="paint-count hidden">0</span></button>
+          <button class="paint" data-k="Y" type="button"><span class="paint-dot"></span>黄<span id="count-Y" class="paint-count hidden">0</span></button>
+          <button class="paint" data-k="B" type="button"><span class="paint-dot"></span>青<span id="count-B" class="paint-count hidden">0</span></button>
+          <button class="paint" data-k="W" type="button"><span class="paint-dot"></span>白<span id="count-W" class="paint-count hidden">0</span></button>
+          <button class="paint" data-k="K" type="button"><span class="paint-dot"></span>黒<span id="count-K" class="paint-count hidden">0</span></button>
+        </div>
+        <div class="actions">
+          <button id="btn-clear" class="btn-ghost" type="button">ぜんぶ戻す</button>
+          <button id="btn-mix" class="btn-primary" type="button">まぜる</button>
+        </div>
+      </div>
+
+      <div id="judge" class="judge hidden">
+        <div class="judge-top">
+          <div class="judge-score-wrap"><span id="judge-score" class="judge-score">0</span><span class="judge-unit">点</span></div>
+          <div id="judge-msg" class="judge-msg"></div>
+        </div>
+        <div class="judge-row"><span class="judge-k">あなた</span><span id="judge-mine" class="chips"></span></div>
+        <div class="judge-row"><span class="judge-k">正解</span><span id="judge-answer" class="chips"></span></div>
+        <button id="btn-next" class="btn-primary" type="button">次の色へ →</button>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">あなたの調色の腕は</div>
+        <div id="result-rank" class="result-rank">職人</div>
+        <div class="result-total"><span id="result-total" class="mono">0</span> / 500 点</div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <ol id="result-list" class="result-list"></ol>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="color.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
