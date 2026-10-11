@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>だるまさんがころんだ | 振り返った瞬間、止まれる？</title>
+<meta name="description" content="夕暮れの校庭で、だるまさんがころんだ。長押しで進み、離して止まる。鬼の唱える速さは毎回バラバラ、溜めてからの「だ！」や急な早口、フェイントも。全5ステージを最速タイムで駆け抜けろ。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="だるまさんがころんだ | 振り返った瞬間、止まれる？">
+<meta property="og:description" content="長押しで進み、離して止まる。緩急をつけて唱える鬼に見つからず、全5ステージでタッチできる？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">だるまさん<span>がころんだ</span></h1>
+    <button id="btn-mute" class="mute" aria-label="効果音のオン・オフ">🔊</button>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 180 110">
+            <!-- 夕日と地面 -->
+            <circle cx="138" cy="62" r="20" fill="#ffcf73"/>
+            <rect x="0" y="62" width="180" height="48" rx="6" fill="#e2ad78"/>
+            <!-- 鬼（後ろ向き） -->
+            <g transform="translate(130 70)">
+              <path d="M-12 0 L12 0 L9 -24 L-9 -24 Z" fill="#d9433a"/>
+              <rect x="-11" y="-14" width="22" height="4" fill="#f2c94c"/>
+              <circle cx="0" cy="-34" r="11" fill="#2a1d1d"/>
+              <path d="M-7 -43 L-9 -50 L-3 -45 Z M7 -43 L9 -50 L3 -45 Z" fill="#fff3d6"/>
+            </g>
+            <!-- 吹き出し -->
+            <rect x="62" y="6" width="58" height="22" rx="11" fill="#fffaf0" stroke="#2b1d33" stroke-width="2"/>
+            <text x="91" y="22" text-anchor="middle" font-size="12" font-weight="900" fill="#2b1d33">ころん…</text>
+            <!-- プレイヤー（後ろ姿・紅白帽） -->
+            <g transform="translate(52 102)">
+              <rect x="-8" y="-10" width="5" height="10" fill="#f3c9a4"/>
+              <rect x="3" y="-10" width="5" height="10" fill="#f3c9a4"/>
+              <rect x="-11" y="-16" width="22" height="7" rx="2" fill="#2f3a6b"/>
+              <rect x="-12" y="-34" width="24" height="20" rx="6" fill="#fffaf0"/>
+              <circle cx="0" cy="-44" r="11" fill="#2a1d1d"/>
+              <path d="M-12 -45 A12 12 0 0 1 12 -45 Z" fill="#e0483a"/>
+            </g>
+          </svg>
+        </div>
+        <h2 class="start-title">振り返った瞬間、<br>ピタッと止まれる？</h2>
+        <p class="start-lead">
+          夕暮れの校庭で、だるまさんがころんだ。鬼の唱える速さは<strong>毎回バラバラ</strong>。
+          溜めてからの「だ！」、急な早口、フェイントにも気をつけて。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">画面か下のボタンを<strong>長押し</strong>している間だけ前に進む（PCはスペースキー）</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">鬼が振り返ったとき動いていたら<strong>アウト</strong>。止まるときは少し滑るので、早めに離すのがコツ。転がってくる<strong>タイヤ</strong>にぶつかってもアウト</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">鬼にタッチでステージクリア。<strong>全5ステージ</strong>の合計タイムを競う</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">-</strong></div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <p class="start-note">音が出ます。右上のボタンでミュートできます。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">ステージ</div><div class="hud-value"><span id="stage-value">1</span><span class="hud-unit">/ 5</span></div></div>
+        <div class="hud-item"><div class="hud-label">のこり</div><div class="hud-value accent mono"><span id="dist-value">0.0</span><span class="hud-unit">m</span></div></div>
+        <div class="hud-item"><div class="hud-label">タイム</div><div class="hud-value mono"><span id="time-value">0.0</span><span class="hud-unit">秒</span></div></div>
+      </div>
+
+      <div id="hold-area" class="hold-area">
+        <div class="stage-wrap">
+          <canvas id="stage" class="stage" aria-label="校庭。奥に鬼、手前にあなた。長押しで前に進む"></canvas>
+        </div>
+        <button id="btn-hold" class="hold-btn" aria-label="長押しで前に進む">
+          <span class="hold-main">長押しで すすむ</span>
+          <span class="hold-sub">はなすと止まる（少し滑る）</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">あなたの称号は</div>
+        <div id="result-rank" class="result-rank">だるま名人</div>
+        <div class="result-total"><span id="result-stages" class="mono">0</span> / 5 ステージ　合計 <span id="result-time" class="mono">0.0</span> 秒</div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <ol id="result-list" class="result-list"></ol>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

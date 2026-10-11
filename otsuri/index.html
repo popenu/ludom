@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>おつり名人 | 払い方を工夫して、財布の小銭を減らせ</title>
+<meta name="description" content="小銭を持ちたくない「薄井さいふ」になって1日10軒の買い物。1,027円に1,032円、1万円に527円を足して……払い方を工夫して、お釣りで増える小銭を減らす。財布は持ち越し。最善の払い方と比べて採点。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="おつり名人 | 小銭は、持たない。">
+<meta property="og:description" content="払い方を工夫して、財布の小銭を減らす1日10軒の買い物ゲーム。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">おつり<span>名人</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+  <div class="awning" aria-hidden="true"></div>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" id="start-art" aria-hidden="true"></div>
+        <h2 class="start-title">小銭は、持たない。</h2>
+        <p class="start-lead">
+          あなたは小銭が大きらいな<strong>薄井さいふ</strong>。1日<strong>10軒</strong>の買い物で、
+          払い方を工夫して<strong>財布の小銭（硬貨）を減らす</strong>。財布は次の店へ持ち越し。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">財布のお金をタップしてトレイへ。トレイのお金はタップで財布に戻る</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text"><strong>支払う</strong>とお店が最少枚数でお釣りをくれる。1,027円に<strong>1,032円</strong>出せばお釣りは5円玉1枚</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">会計後の小銭が<strong>最善と同じ枚数なら100点</strong>。もたつくと行列がイライラ、15秒でお札払いにされる</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 点</div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <button id="btn-intro" class="btn-ghost btn-intro hidden">🎬 導入をもう一度見る</button>
+        <p class="start-note">PC は 1〜9 キーで1円〜1万円を出す、Esc で全部戻す、Enter で支払う／次へ。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">お店</div><div class="hud-value"><span id="round-value">1</span><span class="hud-unit">/ 10軒</span></div></div>
+        <div class="hud-item"><div class="hud-label">得点</div><div class="hud-value accent mono" id="score-value">0</div></div>
+        <div class="hud-item"><div class="hud-label">小銭</div><div class="hud-value mono"><span id="coin-value">0</span><span class="hud-unit">枚</span></div></div>
+      </div>
+
+      <!-- お店 -->
+      <div id="shop-card" class="shop-card">
+        <div class="shop-head">
+          <span id="shop-icon" class="shop-icon">🏪</span>
+          <span id="shop-name" class="shop-name">コンビニ</span>
+          <span id="shop-time" class="shop-time mono">7:40</span>
+        </div>
+        <div class="shop-row">
+          <div class="lcd">
+            <div class="lcd-label">お会計</div>
+            <div id="price-value" class="lcd-value mono">¥0</div>
+          </div>
+          <div id="clerk-bubble" class="bubble clerk">いらっしゃいませ</div>
+        </div>
+        <div id="shop-note" class="shop-note hidden"></div>
+        <div class="gauge">
+          <span class="gauge-label">行列</span>
+          <div class="gauge-bar"><div id="gauge-fill" class="gauge-fill"></div></div>
+          <span id="queue" class="queue">🧍</span>
+        </div>
+      </div>
+
+      <!-- 支払い -->
+      <div id="pay-area">
+        <div class="tray-wrap">
+          <div class="tray-head">
+            <span class="tray-label">出すお金</span>
+            <span class="tray-sum mono">¥<span id="tray-sum">0</span></span>
+          </div>
+          <div id="tray" class="tray" aria-label="出すお金。タップで財布に戻す"></div>
+        </div>
+        <div class="actions">
+          <button id="btn-clear" class="btn-ghost">全部戻す</button>
+          <button id="btn-pay" class="btn-primary" disabled>支払う</button>
+        </div>
+      </div>
+
+      <!-- 精算 -->
+      <div id="settle" class="settle hidden">
+        <div id="settle-stamp" class="settle-stamp">完璧！</div>
+        <div class="settle-row"><span class="settle-label">支払い</span><span id="settle-paid" class="settle-val mono"></span></div>
+        <div id="settle-returned-row" class="settle-row hidden"><span class="settle-label">お返し</span><span id="settle-returned" class="settle-val mini-pieces"></span></div>
+        <div class="settle-row"><span class="settle-label">お釣り</span><span id="settle-change" class="settle-val mono"></span></div>
+        <div id="settle-change-pieces" class="change-pieces"></div>
+        <div id="settle-coins" class="settle-coins"></div>
+        <div id="settle-pts" class="settle-pts mono"></div>
+        <div id="settle-best" class="settle-best"></div>
+        <button id="btn-next" class="btn-primary">次のお店へ</button>
+      </div>
+
+      <!-- 財布 -->
+      <div class="wallet">
+        <div class="wallet-head">
+          <div id="wallet-art" class="wallet-art" aria-hidden="true"></div>
+          <div class="wallet-info">
+            <div class="wallet-title">さいふ <span class="mono">¥<span id="wallet-total">0</span></span></div>
+            <div class="wallet-coins">小銭 <b id="wallet-coins" class="mono">0</b> 枚</div>
+          </div>
+          <div class="hero">
+            <div id="hero-face" class="hero-face" aria-hidden="true"></div>
+            <div id="hero-bubble" class="bubble hero-bubble">さて…</div>
+          </div>
+        </div>
+        <div id="wallet-slots" class="wallet-slots" aria-label="財布の中身。タップで出す"></div>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">1日おつかれさま。あなたは</div>
+        <div id="result-rank" class="result-rank">キャッシュレス仙人</div>
+        <div class="result-total"><span id="result-total" class="mono">0</span> / 1000 点</div>
+        <div id="result-best" class="result-best"></div>
+        <div id="result-wallet" class="result-wallet" aria-hidden="true"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <div class="result-stats">
+          <div class="rs-item"><div class="rs-label">小銭の枚数</div><div class="rs-value mono" id="result-coins">0→0</div></div>
+          <div class="rs-item"><div class="rs-label">完璧</div><div class="rs-value mono"><span id="result-perfect">0</span><small>/ 10回</small></div></div>
+        </div>
+        <ol id="result-list" class="result-list"></ol>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<!-- ===== 導入ムービー ===== -->
+<div id="intro" class="intro hidden" role="dialog" aria-label="導入ムービー">
+  <div class="intro-frame">
+    <div id="intro-stage" class="intro-stage"></div>
+    <div id="intro-cap" class="intro-cap"></div>
+    <div id="intro-dots" class="intro-dots"></div>
+    <button id="btn-skip" class="btn-skip">スキップ ▶▶</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
