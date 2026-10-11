@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ほんとに何割引？ | 30%引き＋50%OFFは、80%引きじゃない</title>
+<meta name="description" content="30%引きのあとにクーポンで50%OFFは、80%引きではなく65%引き。重ね割引、税込計算、2点目半額、ポイント還元、まとめ買い、逆算、半額シール。スーパーのチラシ風の割引計算クイズ10問。あなたの勘違いのクセも診断。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="ほんとに何割引？ | チラシの割引、暗算できる？">
+<meta property="og:description" content="30%引き＋50%OFFは何%引き？ 勘違いしやすい割引計算10問と、あなたのクセ診断。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">ほんとに<span>何割引？</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <div class="ptag big">
+            <div class="ptag-name">本日の目玉</div>
+            <div class="ptag-price"><span class="pp-label">定価</span><span class="pp-num">1,000</span><span class="pp-yen">円</span></div>
+          </div>
+          <span class="stk stk-red art-s1" style="--tilt:-12deg">30%<small>引</small></span>
+          <span class="cpn art-s2">クーポン<b>50%</b>OFF</span>
+          <div class="art-eq"><s>80%引き？</s> → <b>65%引き</b></div>
+        </div>
+        <h2 class="start-title">その割引、<br>ほんとに何割引？</h2>
+        <p class="start-lead">
+          30%引きのあとにクーポンで50%OFF。それ、<strong>80%引きじゃない</strong>。
+          チラシと値札の割引計算を<strong>10問</strong>。あなたの<strong>勘違いのクセ</strong>も診断する。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">値札とシールを見て、答えを<strong>4択</strong>から選ぶ。「どっちがお得」は2〜3択</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">1問<strong>15秒</strong>（難問は20秒）。正解100点＋<strong>速さボーナス最大50点</strong>。時間切れは不正解</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">答えるたびに式で解説。最後に<strong>引っかかった勘違い</strong>を診断</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 点</div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <p class="start-note">PC は 1〜4 キーで選択、Enter で次へ。電卓はナシで。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問題</div><div class="hud-value"><span id="q-index">1</span><span class="hud-unit">/ 10</span></div></div>
+        <div class="hud-item"><div class="hud-label">正解</div><div class="hud-value mono"><span id="correct-value">0</span></div></div>
+        <div class="hud-item"><div class="hud-label">得点</div><div class="hud-value accent mono" id="score-value">0</div></div>
+      </div>
+
+      <div class="timer" aria-hidden="true">
+        <div class="timer-bar"><div id="timer-fill" class="timer-fill"></div></div>
+        <span id="timer-sec" class="timer-sec mono">15</span>
+      </div>
+
+      <div id="flyer" class="flyer">
+        <div class="flyer-head">
+          <span id="q-type" class="q-type">重ね割引</span>
+          <span id="q-level" class="q-level">★☆☆</span>
+        </div>
+        <div id="pop" class="pop"></div>
+        <div id="q-text" class="q-text"></div>
+      </div>
+
+      <div id="choices" class="choices"></div>
+
+      <div id="reveal" class="reveal hidden">
+        <div id="rv-head" class="rv-head"></div>
+        <div id="rv-explain" class="rv-explain mono"></div>
+        <p id="rv-note" class="rv-note"></p>
+        <button id="btn-next" class="btn-primary">次へ</button>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">本日のお買い物、あなたは</div>
+        <div id="result-rank" class="result-rank">値札の鬼</div>
+        <div class="result-total"><span id="result-total" class="mono">0</span> / <span id="result-max">1500</span> 点</div>
+        <div class="result-correct"><span id="result-correct" class="mono">0</span> / 10 問正解</div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <div id="diagnosis" class="diagnosis"></div>
+        <h3 id="result-list-head" class="result-list-head">まちがえた問題</h3>
+        <ol id="result-list" class="result-list"></ol>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
