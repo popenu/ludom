@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>目分量 | 真ん中・直角・半分、定規なしでどこまで正確？</title>
+<meta name="description" content="線の真ん中、円の中心、60°、直角、正方形、コップ半分の水……定規を使わず目分量だけで当てる12種類のお題からランダム10問。1000点満点。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="目分量 | 定規なしでどこまで正確？">
+<meta property="og:description" content="真ん中、直角、正方形、面積2倍、コップ半分。目分量だけで10問、1000点満点。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">目分量</h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 160 100">
+            <line x1="14" y1="50" x2="146" y2="50" stroke="#26262e" stroke-width="3" stroke-linecap="round"/>
+            <line x1="14" y1="40" x2="14" y2="60" stroke="#26262e" stroke-width="3" stroke-linecap="round"/>
+            <line x1="146" y1="40" x2="146" y2="60" stroke="#26262e" stroke-width="3" stroke-linecap="round"/>
+            <line x1="80" y1="30" x2="80" y2="70" stroke="#2f6fdb" stroke-width="3" stroke-dasharray="5 4"/>
+            <line x1="86" y1="28" x2="86" y2="72" stroke="#e0483a" stroke-width="4" stroke-linecap="round"/>
+            <text x="80" y="92" text-anchor="middle" font-size="13" font-weight="800" fill="#e0483a">ズレ 4.5%</text>
+          </svg>
+        </div>
+        <h2 class="start-title">定規なしで、<br>どこまで正確？</h2>
+        <p class="start-lead">
+          真ん中、円の中心、60°、直角、正方形、面積2倍、コップ半分の水……
+          <strong>12種類のお題</strong>からランダムに<strong>10問</strong>。目分量だけで当てる。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">お題を読んで、図をタップ。指を動かせば微調整できる</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">決まったら<strong>決定</strong>。正解（青）とのズレで1問100点</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text"><strong>1000点満点</strong>の合計で称号が決まる</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 点</div>
+        <button id="btn-start" class="btn-primary">はじめる</button>
+        <p class="start-note">指や定規を画面に当てるのはナシで。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問題</div><div class="hud-value"><span id="q-index">1</span><span class="hud-unit">/ 10</span></div></div>
+        <div class="hud-item"><div class="hud-label">得点</div><div class="hud-value accent mono"><span id="total-value">0</span></div></div>
+      </div>
+
+      <div class="prompt">
+        <div id="q-name" class="q-name">まんなか</div>
+        <div id="q-text" class="q-text">線のちょうど真ん中をタップ</div>
+      </div>
+
+      <div class="board-wrap">
+        <svg id="board" class="board" viewBox="0 0 300 300" aria-label="お題の図。タップやドラッグで答える"></svg>
+        <div id="judge" class="judge hidden">
+          <div id="judge-score" class="judge-score">+87</div>
+          <div id="judge-word" class="judge-word">おみごと</div>
+          <div id="judge-err" class="judge-err">ズレ 2.3%</div>
+        </div>
+      </div>
+
+      <div class="legend"><span class="lg user">● あなた</span><span class="lg ans">● 正解</span></div>
+
+      <button id="btn-ok" class="btn-primary" disabled>決定</button>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">あなたの目分量は</div>
+        <div id="result-rank" class="result-rank">大工の棟梁</div>
+        <div class="result-total"><span id="result-total" class="mono">0</span> / 1000 点</div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <ol id="result-list" class="result-list"></ol>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
