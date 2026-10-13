@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>消えるまるばつ | 置けるのは3つまで。4つ目で1つ目が消える三目並べ</title>
+<meta name="description" content="まるもばつも3つまで。4つ目を置くと、いちばん古い1つが消える。終わらない三目並べで、CPUや友だちと対戦。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="消えるまるばつ | 置けるのは3つまで">
+<meta property="og:description" content="4つ目を置くと1つ目が消える三目並べ。引き分けで終わらない、読み合いのまるばつ。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">消える<span>まるばつ</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-art" aria-hidden="true">
+          <svg viewBox="0 0 150 150">
+            <g stroke="#9aa6b8" stroke-width="3" stroke-linecap="round" fill="none">
+              <path d="M52 12 Q50 75 51 138"/><path d="M99 12 Q101 75 99 138"/>
+              <path d="M12 51 Q75 49 138 52"/><path d="M12 99 Q75 101 138 98"/>
+            </g>
+            <circle cx="30" cy="30" r="14" fill="none" stroke="#2a4fb8" stroke-width="5" opacity="0.28"/>
+            <circle cx="75" cy="75" r="14" fill="none" stroke="#2a4fb8" stroke-width="5"/>
+            <circle cx="120" cy="30" r="14" fill="none" stroke="#2a4fb8" stroke-width="5"/>
+            <g stroke="#d2393a" stroke-width="5" stroke-linecap="round"><path d="M18 108 L42 132 M42 108 L18 132"/><path d="M108 63 L132 87 M132 63 L108 87"/></g>
+          </svg>
+        </div>
+        <h2 class="start-title">置けるのは<br><em>3つまで</em>。</h2>
+        <p class="start-lead">
+          まるもばつも、盤に置けるのは3つまで。<strong>4つ目を置くと、いちばん古い1つが消える</strong>。
+          引き分けで終わらない、読み合いの三目並べ。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">縦・横・斜めに3つ並べたら勝ち</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">次に消える印は<strong>うすく点滅</strong>する</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">60手で決着がつかなければ引き分け</span></li>
+        </ul>
+
+        <div class="option">
+          <div class="option-label">あなたは</div>
+          <div class="seg" id="seg-order">
+            <button data-v="first" class="on">先攻 ○</button>
+            <button data-v="second">後攻 ×</button>
+          </div>
+        </div>
+        <div id="start-best" class="start-best hidden">CPUに最高 <strong id="start-best-value">0</strong> 連勝</div>
+        <button id="btn-cpu" class="btn-primary">CPUと対戦</button>
+        <button id="btn-pvp" class="btn-ghost">ふたりで対戦（1台で交代）</button>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-side o"><div class="hud-name" id="name-o">あなた</div><div class="hud-mark">○</div><div class="hud-score mono" id="score-o">0</div></div>
+        <div class="hud-mid"><div class="hud-label">手数</div><div class="hud-moves mono"><span id="moves">0</span><small>/60</small></div></div>
+        <div class="hud-side x"><div class="hud-name" id="name-x">CPU</div><div class="hud-mark">×</div><div class="hud-score mono" id="score-x">0</div></div>
+      </div>
+
+      <div id="turn-msg" class="turn-msg">あなたの番</div>
+
+      <div class="board-wrap">
+        <svg id="board" class="board" viewBox="0 0 300 300" role="grid" aria-label="まるばつの盤面"></svg>
+        <div id="result" class="result hidden">
+          <div id="result-title" class="result-title">勝ち！</div>
+          <div id="result-sub" class="result-sub"></div>
+          <button id="btn-again" class="btn-primary">もう一戦</button>
+          <button id="btn-menu2" class="btn-ghost">メニューへ</button>
+          <a id="btn-share-x" class="share-link" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+        </div>
+      </div>
+
+      <p class="hint">うすく点滅している印は、次にその人が置くと消えます</p>
+
+      <div class="play-actions">
+        <button id="btn-restart" class="btn-ghost small">最初から</button>
+        <button id="btn-menu" class="btn-ghost small">メニューへ</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
