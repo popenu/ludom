@@ -1,0 +1,297 @@
+/* ===================================================
+   あと出しじゃんけん - スタイルシート
+   紅白の斜めストライプに、太い文字。勝って=赤、負けて=青、あいこ=黄。
+=================================================== */
+
+:root {
+  --bg-page: #fff6ea;
+  --stripe: #ffe9d1;
+  --panel: #ffffff;
+  --border: #f0dcc4;
+  --ink: #241c17;
+  --dim: #7b6d62;
+  --win: #e8352b;
+  --lose: #2a5fd8;
+  --draw: #f2b705;
+  --ok: #1f9d55;
+  --gold: #c98a00;
+  --radius: 20px;
+  --mono: "SF Mono", "Menlo", "Consolas", "Roboto Mono", monospace;
+  --emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    repeating-linear-gradient(135deg, transparent 0 22px, var(--stripe) 22px 44px),
+    var(--bg-page);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+button {
+  font-family: inherit;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 12px 16px 28px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- ヘッダー ---------- */
+#page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0 14px;
+}
+.back { color: var(--dim); text-decoration: none; font-size: 0.85rem; min-width: 64px; white-space: nowrap; }
+.back:hover { color: var(--win); }
+.header-spacer { min-width: 64px; }
+.logo { font-size: 1.35rem; font-weight: 900; color: var(--win); white-space: nowrap; }
+.logo span { color: var(--lose); }
+
+#page-main { flex: 1; }
+.screen.hidden { display: none; }
+.hidden { display: none !important; }
+.mono { font-family: var(--mono); }
+
+/* ---------- 共通 ---------- */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 22px;
+  box-shadow: 0 10px 28px #5a3a1a1c;
+}
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.btn-primary { background: var(--win); color: #fff; box-shadow: 0 6px 0 #b8241c; }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-primary:active { transform: translateY(3px); box-shadow: 0 3px 0 #b8241c; }
+.btn-ghost { background: var(--panel); color: var(--ink); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--win); color: var(--win); }
+
+.c-win { color: var(--win); }
+.c-lose { color: var(--lose); }
+.c-draw { color: #c79500; }
+
+/* ---------- スタート画面 ---------- */
+.start-card { text-align: center; }
+.start-demo { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 12px; }
+.demo-opp { font-family: var(--emoji); font-size: 3.6rem; line-height: 1; }
+.demo-order {
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: #fff;
+  background: var(--lose);
+  border-radius: 14px;
+  padding: 6px 16px;
+  transform: rotate(-4deg);
+  box-shadow: 0 4px 0 #1d46a8;
+}
+.start-title { font-size: 1.75rem; font-weight: 900; line-height: 1.3; margin-bottom: 12px; }
+.start-title em { font-style: normal; color: var(--lose); }
+.start-lead { color: var(--dim); font-size: 0.95rem; margin-bottom: 16px; }
+.start-lead strong { color: var(--ink); }
+.howto {
+  list-style: none;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+}
+.howto li { display: flex; gap: 10px; align-items: flex-start; background: #fff4e6; border-radius: 12px; padding: 9px 12px; }
+.howto-num {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--win);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.howto-text { flex: 1; }
+.start-best { color: var(--dim); font-size: 0.9rem; margin-bottom: 12px; }
+.start-best strong { color: var(--gold); font-family: var(--mono); font-size: 1.2rem; margin: 0 2px; }
+.start-note { margin-top: 12px; font-size: 0.78rem; color: var(--dim); }
+
+/* ---------- プレイ画面 ---------- */
+.hud { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.hud-item { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 6px 12px; }
+.hud-label { font-size: 0.68rem; letter-spacing: 0.1em; color: var(--dim); }
+.hud-value { font-size: 1.25rem; font-weight: 800; line-height: 1.3; white-space: nowrap; }
+.hud-value small { font-size: 0.72rem; font-weight: 400; color: var(--dim); margin-left: 2px; }
+.hud-value.accent { color: var(--win); }
+.timebar { height: 8px; background: #f3e3cf; border-radius: 999px; overflow: hidden; margin-bottom: 12px; }
+.timebar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--win), var(--draw)); border-radius: 999px; transform-origin: left; }
+
+.stage {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 10px 28px #5a3a1a1c;
+  padding: 18px 16px 24px;
+  text-align: center;
+  overflow: hidden;
+}
+.opp-label { font-size: 0.78rem; font-weight: 700; color: var(--dim); letter-spacing: 0.1em; }
+.opp {
+  font-family: var(--emoji);
+  font-size: clamp(5rem, 28vw, 7.5rem);
+  line-height: 1.15;
+  margin: 4px 0 8px;
+  /* 相手側の手なので左右反転して向かい合わせにする */
+  transform: scaleX(-1);
+}
+.opp.pop { animation: oppPop 0.16s ease-out; }
+@keyframes oppPop { from { transform: scaleX(-1) scale(0.75); opacity: 0.3; } }
+.order {
+  display: inline-block;
+  font-weight: 900;
+  font-size: clamp(2rem, 11vw, 2.8rem);
+  line-height: 1.2;
+  color: #fff;
+  border-radius: 18px;
+  padding: 6px 26px;
+  letter-spacing: 0.04em;
+}
+.order.win { background: var(--win); box-shadow: 0 6px 0 #b8241c; }
+.order.lose { background: var(--lose); box-shadow: 0 6px 0 #1d46a8; }
+.order.draw { background: var(--draw); box-shadow: 0 6px 0 #b98a00; color: var(--ink); }
+.order.pop { animation: orderPop 0.18s ease-out; }
+@keyframes orderPop { from { transform: scale(0.7) rotate(-6deg); } }
+
+.flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7rem;
+  font-weight: 900;
+  opacity: 0;
+}
+.flash.ok { color: var(--ok); animation: flash 0.35s ease-out; }
+.flash.ng { color: var(--win); animation: flash 0.6s ease-out; background: #e8352b14; }
+@keyframes flash { 0% { opacity: 0.9; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.15); } }
+.stage.shake { animation: shake 0.35s ease-in-out; }
+@keyframes shake { 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+
+.countdown {
+  position: absolute;
+  inset: 0;
+  background: #ffffffee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6rem;
+  font-weight: 900;
+  color: var(--win);
+}
+
+.hands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+.hand {
+  position: relative;
+  border: 0;
+  border-radius: 20px;
+  background: var(--panel);
+  box-shadow: 0 6px 0 #e4cdb2, 0 10px 20px #5a3a1a14;
+  padding: 12px 4px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--ink);
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+.hand:active, .hand.pressed { transform: translateY(4px); box-shadow: 0 2px 0 #e4cdb2, 0 4px 10px #5a3a1a14; }
+.hand:disabled { opacity: 0.5; cursor: default; }
+.hand-emoji { font-family: var(--emoji); font-size: clamp(2.6rem, 13vw, 3.4rem); line-height: 1.1; }
+.hand-name { font-weight: 800; font-size: 0.95rem; }
+.hand-key { position: absolute; top: 6px; right: 10px; font-family: var(--mono); font-size: 0.7rem; color: #c2ad97; }
+@media (hover: none) { .hand-key { display: none; } }
+
+/* ---------- 結果画面 ---------- */
+.result-card { text-align: center; }
+.result-kicker { font-size: 0.85rem; letter-spacing: 0.15em; color: var(--dim); }
+.result-total { margin: 2px 0; }
+.result-total .mono { font-size: 3.4rem; font-weight: 900; color: var(--win); line-height: 1.1; }
+.result-total small { font-size: 1rem; font-weight: 700; margin-left: 4px; }
+.result-rank { font-size: 1.9rem; font-weight: 900; line-height: 1.3; }
+.result-best { color: var(--dim); font-size: 0.9rem; margin-top: 4px; }
+.badge-new {
+  display: inline-block;
+  background: var(--gold);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-right: 6px;
+}
+.result-comment { margin: 12px 0 14px; font-size: 0.95rem; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.stat { background: #fff4e6; border-radius: 12px; padding: 8px 4px; }
+.stat-label { font-size: 0.7rem; color: var(--dim); }
+.stat-value { font-size: 1.1rem; font-weight: 800; }
+.breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; font-size: 0.82rem; }
+.bd { border-radius: 12px; padding: 6px 4px; color: #fff; font-weight: 700; }
+.bd.win { background: var(--win); }
+.bd.lose { background: var(--lose); }
+.bd.draw { background: var(--draw); color: var(--ink); }
+.bd b { font-family: var(--mono); font-size: 1.05rem; }
+.share { display: flex; flex-direction: column; gap: 10px; }
+.share-note { font-size: 0.8rem; color: var(--dim); white-space: pre-wrap; min-height: 1em; }
+.result-actions { margin-top: 12px; }
+
+/* ---------- フッター ---------- */
+#page-footer { text-align: center; padding-top: 24px; font-size: 0.8rem; }
+#page-footer a { color: var(--dim); text-decoration: none; }
+#page-footer a:hover { color: var(--win); }
+
+@media (max-width: 380px) {
+  .card { padding: 22px 16px; }
+  .hands { gap: 8px; }
+}

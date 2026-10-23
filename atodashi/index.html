@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>あと出しじゃんけん | 「負けて」で手が止まる？ 30秒の反射脳トレ</title>
+<meta name="description" content="相手の手と「勝って」「負けて」「あいこ」の指示を見て、すばやく正しい手を出す。30秒で何問いける？ 「負けて」で手が止まる反射脳トレ。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="あと出しじゃんけん | 30秒の反射脳トレ">
+<meta property="og:description" content="「負けて」と言われると、なぜか勝ってしまう。30秒で何問いける？">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">あと出し<span>じゃんけん</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-demo" aria-hidden="true">
+          <div class="demo-opp">✊</div>
+          <div class="demo-order lose">負けて！</div>
+        </div>
+        <h2 class="start-title">「負けて」で、<br><em>手が止まる。</em></h2>
+        <p class="start-lead">
+          相手の手と指示を見て、<strong>正しい手をすばやく出す</strong>。
+          30秒で何問いける？
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">指示は <b class="c-win">勝って</b>・<b class="c-lose">負けて</b>・<b class="c-draw">あいこ</b> の3つ</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">最初は「勝って」だけ。途中から「負けて」「あいこ」が混ざる</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">間違えると0.6秒止まって、連続正解も途切れる</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0</strong> 問</div>
+        <button id="btn-start" class="btn-primary">じゃんけん、スタート</button>
+        <p class="start-note">PC は 1・2・3 キー（または A・S・D）でも出せます</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">のこり</div><div class="hud-value mono"><span id="time">30.0</span><small>秒</small></div></div>
+        <div class="hud-item"><div class="hud-label">正解</div><div class="hud-value mono accent" id="score">0</div></div>
+        <div class="hud-item"><div class="hud-label">連続</div><div class="hud-value mono" id="combo">0</div></div>
+      </div>
+      <div class="timebar"><div id="timebar-fill" class="timebar-fill"></div></div>
+
+      <div id="stage" class="stage">
+        <div class="opp-label">あいての手</div>
+        <div id="opp" class="opp">✊</div>
+        <div id="order" class="order win">勝って！</div>
+        <div id="flash" class="flash"></div>
+        <div id="countdown" class="countdown hidden">3</div>
+      </div>
+
+      <div class="hands">
+        <button class="hand" data-h="0" aria-label="グー"><span class="hand-emoji">✊</span><span class="hand-name">グー</span><span class="hand-key">1</span></button>
+        <button class="hand" data-h="1" aria-label="チョキ"><span class="hand-emoji">✌️</span><span class="hand-name">チョキ</span><span class="hand-key">2</span></button>
+        <button class="hand" data-h="2" aria-label="パー"><span class="hand-emoji">✋</span><span class="hand-name">パー</span><span class="hand-key">3</span></button>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="result-kicker">30秒で</div>
+        <div class="result-total"><span id="result-score" class="mono">0</span><small>問 正解</small></div>
+        <div id="result-rank" class="result-rank">反射の達人</div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">正答率</div><div class="stat-value mono" id="st-acc">0%</div></div>
+          <div class="stat"><div class="stat-label">最大連続</div><div class="stat-value mono" id="st-combo">0</div></div>
+          <div class="stat"><div class="stat-label">平均反応</div><div class="stat-value mono" id="st-react">0.00秒</div></div>
+        </div>
+        <div class="breakdown" id="breakdown"></div>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
