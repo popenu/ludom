@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>お得はどっち？ | 500g450円と300g310円、安いのは？ 単価タイムアタック</title>
+<meta name="description" content="500g450円の肉と300g310円の肉、どっちが安い？ スーパーでよくある悩みを10問のタイムアタックに。量あたりの値段を一瞬で見抜けるか。インストール不要、ブラウザですぐ。">
+<meta property="og:title" content="お得はどっち？ | 単価タイムアタック">
+<meta property="og:description" content="500g450円と300g310円、安いのは？ スーパーの悩みを10問タイムアタックで。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header id="page-header">
+    <a class="back" href="../">← Ludom</a>
+    <h1 class="logo">お得は<span>どっち？</span></h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main id="page-main">
+
+    <!-- ===== スタート画面 ===== -->
+    <section id="screen-start" class="screen">
+      <div class="card start-card">
+        <div class="start-pair" aria-hidden="true">
+          <div class="mini-label"><div class="ml-name">豚こま切れ</div><div class="ml-qty">500<small>g</small></div><div class="ml-price">450<small>円</small></div></div>
+          <div class="vs">vs</div>
+          <div class="mini-label"><div class="ml-name">豚こま切れ</div><div class="ml-qty">300<small>g</small></div><div class="ml-price">310<small>円</small></div></div>
+        </div>
+        <h2 class="start-title">安いのは、<br><em>どっち？</em></h2>
+        <p class="start-lead">
+          スーパーでよくある悩みを<strong>10問のタイムアタック</strong>に。
+          量あたりで安いほうを、すばやくタップ。
+        </p>
+        <ul class="howto">
+          <li><span class="howto-num">1</span><span class="howto-text">2つの値札を見て、<strong>量あたりで安いほう</strong>をタップ</span></li>
+          <li><span class="howto-num">2</span><span class="howto-text">間違えると<strong>+5秒</strong>。答え合わせの間は時計が止まる</span></li>
+          <li><span class="howto-num">3</span><span class="howto-text">後半ほど差が小さく、kg と g、個数も混ざる</span></li>
+        </ul>
+        <div id="start-best" class="start-best hidden">自己ベスト <strong id="start-best-value">0.0</strong> 秒</div>
+        <button id="btn-start" class="btn-primary">買い物スタート</button>
+        <p class="start-note">値段はすべて税込。電卓はナシで。</p>
+      </div>
+    </section>
+
+    <!-- ===== プレイ画面 ===== -->
+    <section id="screen-play" class="screen hidden">
+      <div class="hud">
+        <div class="hud-item"><div class="hud-label">問題</div><div class="hud-value"><span id="q-index">1</span><small>/10</small></div></div>
+        <div class="hud-item wide"><div class="hud-label">タイム</div><div class="hud-value mono"><span id="time">0.0</span><small>秒</small></div></div>
+        <div class="hud-item"><div class="hud-label">ミス</div><div class="hud-value mono" id="miss">0</div></div>
+      </div>
+
+      <div id="q-text" class="q-text">安いのはどっち？</div>
+
+      <div class="shelf">
+        <button class="product" id="card-0" data-i="0" aria-label="左の商品"></button>
+        <button class="product" id="card-1" data-i="1" aria-label="右の商品"></button>
+      </div>
+
+      <div id="feedback" class="feedback"></div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screen-result" class="screen hidden">
+      <div class="card result-card">
+        <div class="receipt-head">RECEIPT</div>
+        <div class="result-kicker">あなたの買い物力は</div>
+        <div id="result-rank" class="result-rank">家計の達人</div>
+        <div class="result-total"><span id="result-time" class="mono">0.0</span> 秒</div>
+        <div id="result-detail" class="result-detail"></div>
+        <div id="result-best" class="result-best"></div>
+        <p id="result-comment" class="result-comment"></p>
+        <ol id="result-list" class="result-list"></ol>
+        <div class="share">
+          <a id="btn-share-x" class="btn-primary" target="_blank" rel="noopener">𝕏 で結果をシェア</a>
+          <button id="btn-copy" class="btn-ghost">📋 結果をコピー</button>
+          <div id="share-note" class="share-note"></div>
+        </div>
+        <div class="result-actions">
+          <button id="btn-retry" class="btn-primary">🔄 もう一度</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="page-footer">
+    <a href="../">Ludom に戻る</a>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
